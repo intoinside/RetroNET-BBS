@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Net;
 using System.Text;
+using RetroNet_BBS.Encoders;
 
 namespace RetroNet_BBS.Server
 {
@@ -73,7 +74,9 @@ namespace RetroNet_BBS.Server
                     // Raise the MessageReceived event
                     OnMessageReceived($"{client.Client.RemoteEndPoint}: {receivedMessage}");
 
-                    byte[] response = Encoders.Petscii.FromAscii("<yellow>Hello <green>world! <white>0<orange>1<red>2<green>3<lightgreen>4<blue>5<lightblue>6789");
+                    var encoder = new Petscii("<yellow>Hello <red><revon>world!<revoff>");
+
+                    byte[] response = encoder.FromAscii();
                     await stream.WriteAsync(response, 0, response.Length);
 
                     messageBuilder.Clear();
