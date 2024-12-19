@@ -77,6 +77,7 @@ namespace RetroNet_BBS.Server
                     var encoder = new Petscii("<yellow>Hello <red><revon>world!<revoff>");
 
                     byte[] response = encoder.FromAscii();
+
                     await stream.WriteAsync(response, 0, response.Length);
 
                     messageBuilder.Clear();
