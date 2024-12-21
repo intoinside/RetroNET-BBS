@@ -7,9 +7,11 @@ namespace RetroNet_BBS.Server
 {
     public class Server
     {
-        private TcpListener Listener;
+        private TcpListener listener;
         private readonly string IpAddress;
         private readonly int Port;
+
+        private int clientConnectedCount;
 
         public Server(string host)
         {
@@ -17,35 +19,66 @@ namespace RetroNet_BBS.Server
             Port = 8502;
         }
 
+        /// <summary>
+        /// Creates a new server instance and starts listening for incoming connections.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task Start()
         {
-            // Abort operation if server is already running
-            if (Listener != null)
+            if (listener != null)
             {
                 throw new InvalidOperationException("Server is already running!");
             }
 
             IPAddress localAddr = IPAddress.Parse(IpAddress);
-            Listener = new TcpListener(localAddr, Port);
-            Listener.Start();
+            listener = new TcpListener(localAddr, Port);
+            listener.Start();
+
+            clientConnectedCount = 0;
 
             OnMessageReceived("Server started. Waiting for a connection...");
 
             while (true)
             {
-                // Handle new client connection
-                TcpClient client = await Listener.AcceptTcpClientAsync();
-                OnMessageReceived($"Connected! Client IP: {client.Client.RemoteEndPoint}");
-                _ = HandleClientAsync(client);
+                try
+                {
+                    while (true)
+                    {
+                        Accept(await listener.AcceptTcpClientAsync());
+                    }
+                }
+                finally
+                {
+                    listener.Stop();
+                }
             }
+        }
+
+        /// <summary>
+        /// Accepts a new client connection and starts a new task to handle the client.
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        private async Task Accept(TcpClient client)
+        {
+            clientConnectedCount++;
+
+            await Task.Yield();
+            await HandleClientAsync(client);
         }
 
         public void Stop()
         {
-            Listener?.Stop();
-            Listener = null;
+            listener.Stop();
+            listener = null;
         }
 
+        /// <summary>
+        /// Handle a single connection
+        /// </summary>
+        /// <param name="client">Client handled</param>
+        /// <returns>Task</returns>
         private async Task HandleClientAsync(TcpClient client)
         {
             NetworkStream stream = client.GetStream();
@@ -61,6 +94,8 @@ namespace RetroNet_BBS.Server
                 if (bytesRead == 0)
                 {
                     OnMessageReceived($"Client {client.Client.RemoteEndPoint} disconnected.");
+
+                    clientConnectedCount--;
                     break; // Client disconnected
                 }
 
