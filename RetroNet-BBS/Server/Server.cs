@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text;
 using RetroNet_BBS.Encoders;
+using RetroNet_BBS.Pages;
 
 namespace RetroNet_BBS.Server
 {
@@ -86,6 +87,10 @@ namespace RetroNet_BBS.Server
             byte[] buffer = new byte[1024];
             StringBuilder messageBuilder = new StringBuilder();
 
+            byte[] response = new Petscii(Pages.Pages.ShowWelcome(clientConnectedCount)).FromAscii();
+
+            await stream.WriteAsync(response, 0, response.Length);
+
             // Receive data in a loop until the client disconnects
             while (true)
             {
@@ -108,12 +113,6 @@ namespace RetroNet_BBS.Server
 
                     // Raise the MessageReceived event
                     OnMessageReceived($"{client.Client.RemoteEndPoint}: {receivedMessage}");
-
-                    var encoder = new Petscii("<yellow>Hello <red><revon>world!<revoff>");
-
-                    byte[] response = encoder.FromAscii();
-
-                    await stream.WriteAsync(response, 0, response.Length);
 
                     messageBuilder.Clear();
                 }
