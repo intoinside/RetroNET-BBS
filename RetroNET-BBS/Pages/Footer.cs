@@ -1,5 +1,5 @@
-﻿using RetroNET_BBS.Encoders;
-using System.ComponentModel;
+﻿using Common.Enum;
+using RetroNET_BBS.Encoders;
 
 namespace RetroNET_BBS.Pages
 {
@@ -7,7 +7,10 @@ namespace RetroNET_BBS.Pages
     {
         public static string ShowFooter(string navigationOptions, Colors? color = null)
         {
+            // Cursor home
             var output = "\x13";
+
+            // Cursor down
             for (int i = 0; i < 24; i++)
             {
                 output += "\x11";
@@ -19,27 +22,8 @@ namespace RetroNET_BBS.Pages
             }
 
             output += navigationOptions;
+
             return output;
         }
-
     }
-
-    public static class Extensions
-    {
-        static public string GetDescription(this Enum enumValue)
-        {
-            var field = enumValue.GetType().GetField(enumValue.ToString());
-            if (field == null)
-                return enumValue.ToString();
-
-            var attributes = field.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            if (Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
-            {
-                return attribute.Description;
-            }
-
-            return enumValue.ToString();
-        }
-    }
-
 }
