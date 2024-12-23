@@ -12,9 +12,14 @@
         /// Constructor
         /// </summary>
         /// <param name="streamToConvert">Stream</param>
-        public Petscii(string streamToConvert)
+        public Petscii(string streamToConvert, bool newPage = false)
         {
             stream = streamToConvert;
+
+            if (newPage)
+            {
+                stream = new String((char)147, 1) + stream;
+            }
         }
 
         /// <summary>
@@ -29,7 +34,7 @@
             stream = stream.Replace("<blue>", new String((char)31, 1), true, null);
             stream = stream.Replace("<orange>", new String((char)129, 1), true, null);
             stream = stream.Replace("<black>", new String((char)144, 1), true, null);
-            stream = stream.Replace("<brown>", new String((char)144, 1), true, null);
+            stream = stream.Replace("<brown>", new String((char)149, 1), true, null);
             stream = stream.Replace("<lightred>", new String((char)150, 1), true, null);
             stream = stream.Replace("<pink>", new String((char)150, 1), true, null);
             stream = stream.Replace("<darkgrey>", new String((char)151, 1), true, null);
