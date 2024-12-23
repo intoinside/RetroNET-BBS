@@ -1,8 +1,5 @@
 ﻿using System.Net.Sockets;
 using System.Net;
-using System.Text;
-using RetroNET_BBS.Encoders;
-using RetroNET_BBS.Pages;
 using RetroNET_BBS.Client;
 
 namespace RetroNET_BBS.Server
