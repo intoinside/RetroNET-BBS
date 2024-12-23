@@ -1,4 +1,5 @@
-﻿using RetroNET_BBS.Encoders;
+﻿using RetroNET_BBS.ContentProvider;
+using RetroNET_BBS.Encoders;
 using System.Net.Sockets;
 using System.Text;
 
@@ -6,6 +7,8 @@ namespace RetroNET_BBS.Client
 {
     public class PetsciiUser : User
     {
+        bool connectionDone = false;
+
         public PetsciiUser(TcpClient client, int onlineUsers) : base(client)
         {
             HandleConnection(onlineUsers);
@@ -26,13 +29,13 @@ namespace RetroNET_BBS.Client
             await stream.WriteAsync(response, 0, response.Length);
 
             // Receive data in a loop until the client disconnects
-            while (true)
+            while (!connectionDone)
             {
                 int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
 
                 if (bytesRead == 0)
                 {
-                    OnUserDisconnect();
+                    Disconnect();
 
                     break; // Client disconnected
                 }
@@ -44,12 +47,29 @@ namespace RetroNET_BBS.Client
                 {
                     string receivedMessage = messageBuilder.ToString().TrimEnd();
 
-                    // Raise the MessageReceived event
-                    //OnMessageReceived($"{client.Client.RemoteEndPoint}: {receivedMessage}");
+                    HandleInput(receivedMessage);
+
+                    //response = Encoding.ASCII.GetBytes(receivedMessage);
+                    //await stream.WriteAsync(response, 0, response.Length);
 
                     messageBuilder.Clear();
                 }
             }
+        }
+
+        private void HandleInput(string receivedMessage)
+        {
+            if (String.Equals(receivedMessage, "q", StringComparison.InvariantCultureIgnoreCase))
+            {
+                Disconnect();
+            }
+        }
+
+        private void Disconnect()
+        {
+            OnUserDisconnect();
+            connectionDone = true;
+            client.Close();
         }
     }
 }
