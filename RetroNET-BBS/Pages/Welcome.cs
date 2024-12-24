@@ -2,15 +2,17 @@
 {
     public class Pages
     {
-        private const string Welcome = "<red>" +
-            "000  0000 0000 000   00  0  0 0000 0000\r" +
-            "0  0 0     0   0  0 0  0 00 0 0     0\r" +
-            "0  0 0     0   0  0 0  0 00 0 0     0\r" +
-            "000  000   0   000  0  0 0 00 000   0\r" +
-            "00   0     0   00   0  0 0 00 0     0\r" +
-            "0 0  0     0   0 0  0  0 0  0 0     0\r" +
-            "0  0 0000  0   0  0  00  0  0 0000  0\r\r\r" +
+        private const string Welcome = "<lightred>" +
+            "***                      *  * **** ****\r" +
+            "*  *                     ** * *     *\r" +
+            "*  *  **   *   *     **  ** * *     *\r" +
+            "***  *  * ***  ***  *  * * ** ***   *\r" +
+            "**   ***   *   *  * *  * * ** *     *\r" +
+            "* *  *     * * *    *  * *  * *     *\r" +
+            "*  *  **    *  *     **  *  * ****  *\r\r\r" +
             "<yellow>Welcome to RetroNET!\r\r" +
+            "https://bit.ly/RetroNET-BBS\r" +
+            "by Raffaele Intorcia\r\r" +
             "<green>Current date is: {0}\r" +
             "Online users: {1}\r";
 
