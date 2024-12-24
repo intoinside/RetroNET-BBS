@@ -1,12 +1,11 @@
-﻿using Markdig;
+﻿using Common.Dto;
+using Common.Enum;
 using Markdig.Syntax;
 using Microsoft.Extensions.Configuration;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Parser
 {
-    public class Markdown
+    public class Markdown : IParser
     {
         private IConfiguration config;
 
@@ -14,7 +13,7 @@ namespace Parser
 
         List<string> fileToParse = new List<string>();
 
-        public string home;
+        private Pages index;
         public string output;
 
         public Markdown()
@@ -31,8 +30,9 @@ namespace Parser
         {
             var fileList = Directory.GetFiles(folder, "*.md");
 
-            var homePath = Path.Combine(folder, "home.md");
-            home = ParseFile(homePath);
+            var homePath = Path.Combine(folder, "index.md");
+            index = ParseFile(homePath);
+            index.Title = "Index";
 
             foreach (var file in fileToParse)
             {
@@ -48,12 +48,17 @@ namespace Parser
             //}
         }
 
-        public string Home()
+        public string Title()
         {
-            return home;
+            return index.Title;
         }
 
-        private string ParseFile(string path)
+        public Pages Home()
+        {
+            return index;
+        }
+
+        private Pages ParseFile(string path)
         {
             var markdown = File.ReadAllText(path);
             var document = Markdig.Markdown.Parse(markdown);
@@ -72,15 +77,34 @@ namespace Parser
                 for (var i = 0; i < list.Count; i++)
                 {
                     var block = (ListItemBlock)list[i];
-                    var text = ((ParagraphBlock)((ListItemBlock)list[i])[0]).Inline.FirstChild.ToString();
 
-                    output += text + "\r\n";
+                    string text = string.Empty;
+                    if (block[0] is ParagraphBlock)
+                    {
+                        text = ((ParagraphBlock)block[0]).Inline.FirstChild.ToString();
+                    } else
+                    {
+                        text = ((Markdig.Syntax.Inlines.LinkInline)((Markdig.Syntax.Inlines.ContainerInline)((ParagraphBlock)block[0]).Inline.FirstChild)).Url;
+                        
+                    }
+
+                    var bulletNumber = i + (i < 9 ? 48 : 55);
+
+                    output += "<revon><white> " + (char)(bulletNumber + 1) + " <revoff><lightgrey>";
+                        
+                    output += " " + text + "\r\n";
 
                     fileToParse.Add(text.Replace(' ', '_'));
                 }
             }
 
-            return output;
+            Pages page = new Pages()
+            {
+                Source = Sources.Markdown,
+                Content = output,
+            };
+
+            return page;
         }
     }
 }

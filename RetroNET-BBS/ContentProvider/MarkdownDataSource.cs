@@ -19,7 +19,7 @@ namespace RetroNET_BBS.ContentProvider
 
         public string Home()
         {
-            return markdown.Home();
+            return markdown.Home().Content;
         }
 
         public string GetPage(string pageId)
