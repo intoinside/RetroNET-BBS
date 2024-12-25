@@ -1,7 +1,7 @@
 ﻿using Common.Enum;
 using RetroNET_BBS.Encoders;
 
-namespace RetroNET_BBS.Pages
+namespace RetroNET_BBS.Templates
 {
     public class Footer
     {

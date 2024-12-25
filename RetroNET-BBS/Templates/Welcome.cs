@@ -1,6 +1,6 @@
-﻿namespace RetroNET_BBS.Pages
+﻿namespace RetroNET_BBS.Templates
 {
-    public class Pages
+    public class WelcomePage
     {
         private const string Welcome = "<lightred>" +
             "***                      *  * **** ****\r" +

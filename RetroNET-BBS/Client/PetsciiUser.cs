@@ -1,5 +1,6 @@
 ﻿using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
+using RetroNET_BBS.Templates;
 using System.Net.Sockets;
 using System.Text;
 
@@ -16,15 +17,18 @@ namespace RetroNET_BBS.Client
 
         public async Task HandleConnection(int onlineUsers)
         {
+            var petsciiEncoder = new Petscii();
+
             NetworkStream stream = client.GetStream();
 
             byte[] buffer = new byte[1024];
 
-            var output = Pages.Pages.ShowWelcome(onlineUsers);
-            byte[] response = new Petscii(output).FromAscii();
+            // Show welcome page
+            var output = WelcomePage.ShowWelcome(onlineUsers);
+            byte[] response = petsciiEncoder.FromAscii(output);
             await stream.WriteAsync(response, 0, response.Length);
 
-            // Not clear why this is needed
+            // Not clear why this is needed but whatever
             await stream.ReadAsync(buffer, 0, buffer.Length);
             string input;
             do
@@ -32,9 +36,17 @@ namespace RetroNET_BBS.Client
                 input = await HandleConnectionFlow(stream, buffer);
             } while (input.Length == 0);
 
-            output = MarkdownDataSource.Instance.Home();
-            output += Pages.Footer.ShowFooter("Navigation options", Colors.Lightgrey);
-            response = new Petscii(output, true).FromAscii();
+            //output = MarkdownDataSource.Instance.Home();
+            var url = "https://www.punto-informatico.it/feed/";
+            var feed = RssDataSource.Instance.RequestFeed(url);
+
+
+            var pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
+
+            output = pages.Content;
+
+            output += Footer.ShowFooter("Navigation options", Colors.Lightgrey);
+            response = petsciiEncoder.FromAscii(output, true);
             await stream.WriteAsync(response, 0, response.Length);
 
             // Receive data in a loop until the client disconnects
