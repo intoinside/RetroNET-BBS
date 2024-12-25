@@ -1,6 +1,8 @@
-﻿using RetroNET_BBS.ContentProvider;
+﻿using Common.Dto;
+using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 
@@ -37,25 +39,40 @@ namespace RetroNET_BBS.Client
             } while (input.Length == 0);
 
             //output = MarkdownDataSource.Instance.Home();
-            var url = "https://www.punto-informatico.it/feed/";
+            var url = "https://www.apuliaretrocomputing.it/wordpress/feed/";
             var feed = RssDataSource.Instance.RequestFeed(url);
 
-
-            var pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
-
-            output = pages.Content;
-
-            output += Footer.ShowFooter("Navigation options", Colors.Lightgrey);
-            response = petsciiEncoder.FromAscii(output, true);
-            await stream.WriteAsync(response, 0, response.Length);
-
-            // Receive data in a loop until the client disconnects
-            while (!connectionDone)
+            string acceptedNavigationOptions = string.Empty;
+            char commandArrived = (char)0;
+            do
             {
-                input = await HandleConnectionFlow(stream, buffer);
+                Pages pages;
 
-                HandleInput(input);
-            }
+                if (commandArrived == (char)0)
+                {
+                    pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
+                }
+                else
+                {
+                    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
+                }
+
+                output = pages.Content;
+
+                output += Footer.ShowFooter("Navigation options", Colors.Lightgrey);
+                response = petsciiEncoder.FromAscii(output, true);
+                await stream.WriteAsync(response, 0, response.Length);
+
+                commandArrived = (char)0;
+
+                // Receive data in a loop until the client disconnects
+                while (!connectionDone && commandArrived == (char)0)
+                {
+                    input = await HandleConnectionFlow(stream, buffer);
+
+                    commandArrived = HandleInput(input, "1");
+                }
+            } while (!connectionDone);
         }
 
         private async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer)
@@ -73,12 +90,20 @@ namespace RetroNET_BBS.Client
             return data;
         }
 
-        private void HandleInput(string receivedMessage)
+        private char HandleInput(string receivedMessage, string acceptedNavigationOptions)
         {
             if (string.Equals(receivedMessage, "q", StringComparison.InvariantCultureIgnoreCase))
             {
                 Disconnect();
+                return (char)0;
             }
+
+            if (string.Equals(receivedMessage, acceptedNavigationOptions, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return receivedMessage.First();
+            }
+
+            return (char)0;
         }
 
         private void Disconnect()

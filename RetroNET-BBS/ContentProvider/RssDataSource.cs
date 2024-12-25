@@ -70,6 +70,30 @@ namespace RetroNET_BBS.ContentProvider
             };
         }
 
+        public Pages GetPage(string url, char selection, IEncoder encoder)
+        {
+            var requestedFeed = feeds[url];
+
+            int index = 0;
+            if (selection <= 57 && selection >= 48)
+            {
+                index = selection - 48;
+            }
+            else
+            {
+                index = selection - 65;
+            }
+
+            var content = encoder.Cleaner(requestedFeed.Articles[index - 1].Content);
+
+            return new Pages()
+            {
+                Source = Sources.Rss,
+                Title = string.Empty,
+                Content = content,
+            };
+        }
+
         //public string Home()
         //{
         //    return rss.Home().Content;

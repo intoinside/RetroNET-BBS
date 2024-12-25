@@ -1,4 +1,5 @@
 ﻿using Parser.Rss.Dto;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace Parser.Rss
@@ -43,7 +44,9 @@ namespace Parser.Rss
                 var itemlist = from item in channelNode.Where(i => i.Name.LocalName == "item")
                                select new FeedItemDto
                                {
-                                   Content = item.Elements().First(i => i.Name.LocalName == "description").Value,
+                                   Content = item.Elements().Any(i => i.Name.LocalName == "encoded")
+                                       ? Regex.Replace(item.Elements().First(i => i.Name.LocalName == "encoded").Value, "<.*?>", string.Empty)
+                                       : item.Elements().First(i => i.Name.LocalName == "description").Value,
                                    Link = item.Elements().First(i => i.Name.LocalName == "link").Value,
                                    PublishDate = ParseDate(item.Elements().First(i => i.Name.LocalName == "pubDate").Value),
                                    Title = item.Elements().First(i => i.Name.LocalName == "title").Value

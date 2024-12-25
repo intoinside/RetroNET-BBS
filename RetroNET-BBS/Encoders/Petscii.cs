@@ -28,7 +28,18 @@
             stream = stream.Replace("ì", "i'", false, null);
             stream = stream.Replace("ò", "o'", false, null);
             stream = stream.Replace("ù", "u'", false, null);
+            stream = stream.Replace("“", "\x22", false, null);
+            stream = stream.Replace("”", "\x22", false, null);
+            stream = stream.Replace("’", "\x27", false, null);
+            stream = stream.Replace("&#8217;", "\x27", false, null);
+            stream = stream.Replace("–", "\x2D", false, null);
 
+            // Foreign char
+            stream = stream.Replace("ý", "y", false, null);
+            stream = stream.Replace("č", "c", false, null);
+            stream = stream.Replace("í", "i", false, null);
+            stream = stream.Replace("ě", "e", false, null);
+            
             return stream;
         }
 
