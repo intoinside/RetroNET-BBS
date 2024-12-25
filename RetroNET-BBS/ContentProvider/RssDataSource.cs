@@ -46,11 +46,11 @@ namespace RetroNET_BBS.ContentProvider
             {
                 var bulletNumber = i + (i < 9 ? 48 : 55);
 
-                content.Append("<revon><white> " + (char)(bulletNumber + 1) + " <revoff><lightgrey>");
+                content.Append(StringUtils.CreateBulletNumber(bulletNumber + 1));
                 content.Append(" ");
 
                 var itemTitle = encoder.Cleaner(item.Title);
-                content.AppendLine(StringUtils.SplitToLines(itemTitle, 31).First() + "...");
+                content.AppendLine(StringUtils.SplitToLines(itemTitle, encoder.NumberOfColumn() - 8).First() + "...");
 
                 content.AppendLine("    " + item.PublishDate.ToString("dd/MM/yyyy HH:mm"));
 
@@ -69,38 +69,6 @@ namespace RetroNET_BBS.ContentProvider
                 Content = content.ToString(),
             };
         }
-
-        //var content = new StringBuilder();
-
-        //int i = 0;
-        //foreach (var item in entries)
-        //{
-        //    var bulletNumber = i + (i < 9 ? 48 : 55);
-
-        //    content.Append("<revon><white> " + (char)(bulletNumber + 1) + " <revoff><lightgrey>");
-        //    content.Append(" ");
-        //    var itemTitle = item.Title.Trim();
-
-        //    content.AppendLine(StringUtils.SplitToLines(itemTitle, 31).First() + "...");
-
-        //    content.AppendLine("    " + item.PublishDate.ToString("dd/MM/yyyy HH:mm"));
-
-        //    if (i == 8)
-        //    {
-        //        break;
-        //    }
-
-        //    i++;
-        //}
-
-        //Pages page = new Pages()
-        //{
-        //    Source = Sources.Rss,
-        //    Title = title,
-        //    Content = content.ToString(),
-        //};
-
-        //return page;
 
         //public string Home()
         //{

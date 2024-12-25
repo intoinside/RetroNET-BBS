@@ -33,6 +33,15 @@
         }
 
         /// <summary>
+        /// Number of characters per row
+        /// </summary>
+        /// <returns>Number of column for encoding</returns>
+        public int NumberOfColumn()
+        {
+            return 40;
+        }
+
+        /// <summary>
         /// Converts an ASCII string to a byte array.
         /// </summary>
         /// <param name="stream">Stream to be converted</param>
