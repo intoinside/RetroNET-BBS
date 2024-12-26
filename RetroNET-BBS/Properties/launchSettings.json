@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "RetroNet-BBS": {
+    "RetroNET-BBS": {
       "commandName": "Project"
     },
     "Container (Dockerfile)": {

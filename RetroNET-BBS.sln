@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RetroNET-BBS", "RetroNet-BBS\RetroNET-BBS.csproj", "{AE16F371-92CA-4270-9393-1AC11DA9BD29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csproj", "{AABEF68A-D914-4F00-BB42-921B5D6F1902}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{A56FD560-AE06-4304-96DB-46E47ADAB756}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AE16F371-92CA-4270-9393-1AC11DA9BD29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE16F371-92CA-4270-9393-1AC11DA9BD29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE16F371-92CA-4270-9393-1AC11DA9BD29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE16F371-92CA-4270-9393-1AC11DA9BD29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AABEF68A-D914-4F00-BB42-921B5D6F1902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AABEF68A-D914-4F00-BB42-921B5D6F1902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AABEF68A-D914-4F00-BB42-921B5D6F1902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AABEF68A-D914-4F00-BB42-921B5D6F1902}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

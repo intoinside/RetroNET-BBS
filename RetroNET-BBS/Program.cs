@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using RetroNet_BBS.Server;
+using RetroNET_BBS.Server;
 
 Console.WriteLine("Hello, World!");
 
