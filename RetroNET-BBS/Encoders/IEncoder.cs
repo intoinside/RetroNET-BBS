@@ -14,10 +14,16 @@
         string Cleaner(string input);
 
         /// <summary>
+        /// Number of rows
+        /// </summary>
+        /// <returns>Number of rows for encoding</returns>
+        int NumberOfRows();
+
+        /// <summary>
         /// Number of characters per row
         /// </summary>
-        /// <returns>Number of column for encoding</returns>
-        int NumberOfColumn();
+        /// <returns>Number of columns for encoding</returns>
+        int NumberOfColumns();
 
         /// <summary>
         /// Converts an ASCII string to a byte array.

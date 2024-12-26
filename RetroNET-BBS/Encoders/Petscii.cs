@@ -44,10 +44,19 @@
         }
 
         /// <summary>
+        /// Number of rows
+        /// </summary>
+        /// <returns>Number of rows for encoding</returns>
+        public int NumberOfRows()
+        {
+            return 25;
+        }
+
+        /// <summary>
         /// Number of characters per row
         /// </summary>
         /// <returns>Number of column for encoding</returns>
-        public int NumberOfColumn()
+        public int NumberOfColumns()
         {
             return 40;
         }

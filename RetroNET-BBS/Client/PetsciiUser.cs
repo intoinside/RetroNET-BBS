@@ -2,7 +2,6 @@
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
-using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 
@@ -38,7 +37,6 @@ namespace RetroNET_BBS.Client
                 input = await HandleConnectionFlow(stream, buffer);
             } while (input.Length == 0);
 
-            //output = MarkdownDataSource.Instance.Home();
             var url = "https://www.apuliaretrocomputing.it/wordpress/feed/";
             var feed = RssDataSource.Instance.RequestFeed(url);
 
@@ -48,7 +46,7 @@ namespace RetroNET_BBS.Client
             {
                 Pages pages;
 
-                if (commandArrived == (char)0)
+                if (commandArrived == (char)0 || commandArrived == 'i')
                 {
                     pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
                 }
@@ -59,7 +57,7 @@ namespace RetroNET_BBS.Client
 
                 output = pages.Content;
 
-                output += Footer.ShowFooter("Navigation options", Colors.Lightgrey);
+                output += Footer.ShowFooter("q] quit i] index ", Colors.Yellow);
                 response = petsciiEncoder.FromAscii(output, true);
                 await stream.WriteAsync(response, 0, response.Length);
 
@@ -70,7 +68,7 @@ namespace RetroNET_BBS.Client
                 {
                     input = await HandleConnectionFlow(stream, buffer);
 
-                    commandArrived = HandleInput(input, "1");
+                    commandArrived = HandleInput(input, pages.AcceptedDetailIndex);
                 }
             } while (!connectionDone);
         }
@@ -98,7 +96,13 @@ namespace RetroNET_BBS.Client
                 return (char)0;
             }
 
-            if (string.Equals(receivedMessage, acceptedNavigationOptions, StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(receivedMessage, "i", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return 'i';
+            }
+
+            //if (string.Equals(receivedMessage, acceptedNavigationOptions, StringComparison.InvariantCultureIgnoreCase))
+            if (acceptedNavigationOptions.Contains(receivedMessage))
             {
                 return receivedMessage.First();
             }
