@@ -1,4 +1,6 @@
 ﻿using Common.Dto;
+using Common.Enum;
+using Parser.Markdown;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
@@ -37,25 +39,37 @@ namespace RetroNET_BBS.Client
                 input = await HandleConnectionFlow(stream, buffer);
             } while (input.Length == 0);
 
-            var url = "https://www.apuliaretrocomputing.it/wordpress/feed/";
-            var feed = RssDataSource.Instance.RequestFeed(url);
+            //var url = "https://www.apuliaretrocomputing.it/wordpress/feed/";
+            //var feed = RssDataSource.Instance.RequestFeed(url);
 
             string acceptedNavigationOptions = string.Empty;
             char commandArrived = (char)0;
+
+            Page pages = PageContainer.Pages.First();
             do
             {
-                Pages pages;
+                //if (commandArrived == (char)0 || commandArrived == 'i')
+                //{
+                //    pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
+                //}
+                //else
+                //{
+                //    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
+                //}
 
-                if (commandArrived == (char)0 || commandArrived == 'i')
+                //pages = MarkdownDataSource.Instance.GetHome(petsciiEncoder);
+
+                switch (pages.Source)
                 {
-                    pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
-                }
-                else
-                {
-                    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
+                    case Sources.Markdown:
+                        output = MarkdownStatic.GetHome(pages.Content, petsciiEncoder);
+                        break;
+                    //case Sources.Rss:
+                    //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
+                    //    break;
                 }
 
-                output = pages.Content;
+                //output = pages.Content;
 
                 output += Footer.ShowFooter("q] quit i] index ", Colors.Yellow);
                 response = petsciiEncoder.FromAscii(output, true);

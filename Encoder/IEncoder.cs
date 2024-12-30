@@ -1,4 +1,4 @@
-﻿namespace RetroNET_BBS.Encoders
+﻿namespace Encoder
 {
     /// <summary>
     /// Defines a contract for encoding operations.

@@ -1,4 +1,6 @@
-﻿namespace RetroNET_BBS.Encoders
+﻿using Encoder;
+
+namespace RetroNET_BBS.Encoders
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Petscii"/> class.

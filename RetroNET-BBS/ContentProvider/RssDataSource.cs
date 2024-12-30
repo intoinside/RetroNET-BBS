@@ -1,6 +1,7 @@
 ﻿using Common.Dto;
 using Common.Enum;
 using Common.Utils;
+using Encoder;
 using Parser.Rss;
 using Parser.Rss.Dto;
 using RetroNET_BBS.Encoders;
@@ -36,7 +37,7 @@ namespace RetroNET_BBS.ContentProvider
             return feed;
         }
 
-        public Pages GetHome(string url, IEncoder encoder)
+        public Page GetHome(string url, IEncoder encoder)
         {
             var mainFeed = feeds[url];
 
@@ -71,7 +72,7 @@ namespace RetroNET_BBS.ContentProvider
                 i++;
             }
 
-            return new Pages()
+            return new Page()
             {
                 Source = Sources.Rss,
                 Title = mainFeed.Title,
@@ -80,7 +81,7 @@ namespace RetroNET_BBS.ContentProvider
             };
         }
 
-        public Pages GetPage(string url, char selection, IEncoder encoder)
+        public Page GetPage(string url, char selection, IEncoder encoder)
         {
             var requestedFeed = feeds[url];
             var rowsToShow = encoder.NumberOfRows() - 8;
@@ -101,7 +102,7 @@ namespace RetroNET_BBS.ContentProvider
             content.AppendLine("<lightgray><crsrdown><crsrdown><crsrdown><crsrdown>");
             content.AppendJoin('\r', StringUtils.SplitToLines(encoder.Cleaner(requestedFeed.Articles[index - 1].Content), encoder.NumberOfColumns() - 1).Take(rowsToShow));
 
-            return new Pages()
+            return new Page()
             {
                 Source = Sources.Rss,
                 Title = string.Empty,
@@ -109,15 +110,5 @@ namespace RetroNET_BBS.ContentProvider
                 AcceptedDetailIndex = string.Empty,
             };
         }
-
-        //public string Home()
-        //{
-        //    return rss.Home().Content;
-        //}
-
-        //public string GetPage(string pageId)
-        //{
-        //    return string.Empty;
-        //}
     }
 }

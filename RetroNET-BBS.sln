@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common\Common.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Parser", "Parser\Parser.csproj", "{A56FD560-AE06-4304-96DB-46E47ADAB756}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encoder", "Encoder\Encoder.csproj", "{3A3A982F-A3A0-4D11-8441-DCB88FAB23DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A56FD560-AE06-4304-96DB-46E47ADAB756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3A3A982F-A3A0-4D11-8441-DCB88FAB23DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3A3A982F-A3A0-4D11-8441-DCB88FAB23DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3A3A982F-A3A0-4D11-8441-DCB88FAB23DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3A3A982F-A3A0-4D11-8441-DCB88FAB23DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

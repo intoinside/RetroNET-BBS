@@ -5,6 +5,6 @@ namespace Parser
     public interface IParser
     {
         string Title();
-        Pages Home();
+        Page Home();
     }
 }
