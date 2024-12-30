@@ -1,9 +1,13 @@
 ﻿using Common.Dto;
 using Common.Enum;
+using Markdig.Renderers.Normalize;
+using Markdig;
 using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 using Microsoft.Extensions.Configuration;
+using Markdig.Renderers.Html.Inlines;
 
-namespace Parser
+namespace Parser.Markdown
 {
     public class Markdown : IParser
     {
@@ -82,19 +86,29 @@ namespace Parser
                     if (block[0] is ParagraphBlock)
                     {
                         text = ((ParagraphBlock)block[0]).Inline.FirstChild.ToString();
-                    } else
+                        var inline = ((ParagraphBlock)block[0]).Inline.FirstChild;
+                        if (inline is LinkInline)
+                        {
+                            var ininline = (LinkInline)inline;
+                            var label = ininline.ToMarkdownString();
+                            var url = ininline.Url;
+                            var title = ininline.Title;
+
+                            text = "<markdown title=\"" + (string.IsNullOrWhiteSpace(title) ? label : title) + "\" url=\"" + url + "\">";
+                        }
+                    }
+                    else if (block[0] is HtmlBlock)
                     {
-                        text = ((Markdig.Syntax.Inlines.LinkInline)((Markdig.Syntax.Inlines.ContainerInline)((ParagraphBlock)block[0]).Inline.FirstChild)).Url;
-                        
+                        text = ((LeafBlock)block[0]).Lines.ToString();
                     }
 
                     var bulletNumber = i + (i < 9 ? 48 : 55);
 
                     output += "<revon><white> " + (char)(bulletNumber + 1) + " <revoff><lightgrey>";
-                        
+
                     output += " " + text + "\r\n";
 
-                    fileToParse.Add(text.Replace(' ', '_'));
+                    //fileToParse.Add(text.Replace(' ', '-'));
                 }
             }
 

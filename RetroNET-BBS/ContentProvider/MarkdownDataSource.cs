@@ -1,11 +1,10 @@
-﻿using Markdig;
-using Parser;
+﻿using System.Text;
 
 namespace RetroNET_BBS.ContentProvider
 {
     public class MarkdownDataSource
     {
-        Parser.Markdown markdown;
+        Parser.Markdown.Markdown markdown;
         
         public static MarkdownDataSource Instance => _instance.Value;
 
@@ -14,12 +13,18 @@ namespace RetroNET_BBS.ContentProvider
 
         MarkdownDataSource()
         {
-            markdown = new Parser.Markdown();
+            markdown = new Parser.Markdown.Markdown();
         }
 
         public string Home()
         {
-            return markdown.Home().Content;
+            var content = new StringBuilder();
+
+            // Upper offset
+            content.AppendLine("<lightgray><crsrdown><crsrdown><crsrdown><crsrdown>");
+
+            content.AppendLine(markdown.Home().Content);
+            return content.ToString();
         }
 
         public string GetPage(string pageId)
