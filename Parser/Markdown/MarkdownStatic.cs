@@ -16,7 +16,7 @@ namespace Parser.Markdown
         public static List<Page> ParseAllFiles(string path)
         {
             List<Page> pageParsed = new List<Page>();
-            
+
             Directory.GetFiles(path, "*.md", SearchOption.TopDirectoryOnly)
                 .ToList()
                 .ForEach(file =>
@@ -87,7 +87,24 @@ namespace Parser.Markdown
                 {
                     var heading = item as HeadingBlock;
 
-                    output.AppendLine(heading.Inline.FirstChild.ToString());
+                    if (heading.Parent is Block && !(heading.Parent is MarkdownDocument))
+                    {
+                        continue;
+                    }
+
+                    var enumerator = heading.Inline.GetEnumerator();
+                    while (enumerator.MoveNext())
+                    {
+                        if (enumerator.Current is HtmlInline)
+                        {
+                            output.Append(((HtmlInline)(enumerator.Current)).Tag);
+                        }
+                        else if (enumerator.Current is LiteralInline)
+                        {
+                            output.Append(((LiteralInline)enumerator.Current).Content.ToString());
+                        }
+                    }
+                    output.AppendLine();
                 }
                 else if (item is ListBlock)
                 {
@@ -139,13 +156,42 @@ namespace Parser.Markdown
                         }
                     }
                 }
+                else if (item is HtmlBlock)
+                {
+                    var html = item as HtmlBlock;
+
+                    if (html.Parent is Block && !(html.Parent is MarkdownDocument))
+                    {
+                        continue;
+                    }
+
+                    for (int i = 0; i < html.Lines.Lines.Count(); i++)
+                    {
+                        output.Append(html.Lines.Lines[i].ToString());
+                    }
+                    output.AppendLine();
+                }
                 else if (item is ParagraphBlock)
                 {
                     var paragraph = item as ParagraphBlock;
-                    if (paragraph.Parent is MarkdownDocument)
+                    if (paragraph.Parent is Block && !(paragraph.Parent is MarkdownDocument))
                     {
-                        output.AppendLine(paragraph.Inline.FirstChild.ToString());
+                        continue;
                     }
+
+                    var enumerator = paragraph.Inline.GetEnumerator();
+                    while (enumerator.MoveNext())
+                    {
+                        if (enumerator.Current is HtmlInline)
+                        {
+                            output.Append(((HtmlInline)(enumerator.Current)).Tag);
+                        }
+                        else if (enumerator.Current is LiteralInline)
+                        {
+                            output.Append(((LiteralInline)enumerator.Current).Content.ToString());
+                        }
+                    }
+                    output.AppendLine();
                 }
             }
 
