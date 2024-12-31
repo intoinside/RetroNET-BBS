@@ -11,6 +11,7 @@ namespace RetroNET_BBS.Client
 {
     public class PetsciiUser : User
     {
+        Stack<Page> history = new Stack<Page>();
         bool connectionDone = false;
 
         public PetsciiUser(TcpClient client, int onlineUsers) : base(client)
@@ -39,15 +40,30 @@ namespace RetroNET_BBS.Client
                 input = await HandleConnectionFlow(stream, buffer);
             } while (input.Length == 0);
 
-            //var url = "https://www.apuliaretrocomputing.it/wordpress/feed/";
-            //var feed = RssDataSource.Instance.RequestFeed(url);
-
             string acceptedNavigationOptions = string.Empty;
             char commandArrived = (char)0;
 
-            Page pages = PageContainer.Pages.First();
+            Page currentPage = PageContainer.Pages.First();
             do
             {
+                if (commandArrived != '.')
+                {
+                    history.Push(currentPage);
+
+                    var nextPage = currentPage.LinkedContentsType.Where(x => x.BulletItem == commandArrived);
+                    if (nextPage.Any())
+                    {
+                        currentPage = PageContainer.FindPageFromPath(nextPage.Single().Path);
+                    }
+                }
+                else
+                {
+                    if (history.Count > 0)
+                    {
+                        currentPage = history.Pop();
+                    }
+                }
+
                 //if (commandArrived == (char)0 || commandArrived == 'i')
                 //{
                 //    pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
@@ -59,10 +75,10 @@ namespace RetroNET_BBS.Client
 
                 //pages = MarkdownDataSource.Instance.GetHome(petsciiEncoder);
 
-                switch (pages.Source)
+                switch (currentPage.Source)
                 {
                     case Sources.Markdown:
-                        output = MarkdownStatic.GetHome(pages.Content, petsciiEncoder);
+                        output = MarkdownStatic.GetHome(currentPage.Content, petsciiEncoder);
                         break;
                     //case Sources.Rss:
                     //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
@@ -71,7 +87,7 @@ namespace RetroNET_BBS.Client
 
                 //output = pages.Content;
 
-                output += Footer.ShowFooter("q] quit i] index ", Colors.Yellow);
+                output += Footer.ShowFooter("q] quit .] back ", Colors.Yellow);
                 response = petsciiEncoder.FromAscii(output, true);
                 await stream.WriteAsync(response, 0, response.Length);
 
@@ -82,7 +98,7 @@ namespace RetroNET_BBS.Client
                 {
                     input = await HandleConnectionFlow(stream, buffer);
 
-                    commandArrived = HandleInput(input, pages.AcceptedDetailIndex);
+                    commandArrived = HandleInput(input, currentPage.AcceptedDetailIndex);
                 }
             } while (!connectionDone);
         }
@@ -110,12 +126,11 @@ namespace RetroNET_BBS.Client
                 return (char)0;
             }
 
-            if (string.Equals(receivedMessage, "i", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(receivedMessage, ".", StringComparison.InvariantCultureIgnoreCase))
             {
-                return 'i';
+                return '.';
             }
 
-            //if (string.Equals(receivedMessage, acceptedNavigationOptions, StringComparison.InvariantCultureIgnoreCase))
             if (acceptedNavigationOptions.Contains(receivedMessage))
             {
                 return receivedMessage.First();

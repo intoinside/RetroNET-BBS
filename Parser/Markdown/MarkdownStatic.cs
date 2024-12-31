@@ -8,12 +8,26 @@ using System.Text;
 using System.Security.Cryptography;
 using Encoder;
 using Common.Utils;
-using Markdig;
 
 namespace Parser.Markdown
 {
     public static class MarkdownStatic
     {
+        public static List<Page> ParseAllFiles(string path)
+        {
+            List<Page> pageParsed = new List<Page>();
+            
+            Directory.GetFiles(path, "*.md", SearchOption.TopDirectoryOnly)
+                .ToList()
+                .ForEach(file =>
+                {
+                    pageParsed.Add(ParseFile(file));
+                });
+
+            return pageParsed;
+        }
+
+
         public static Page ParseFile(string path)
         {
             var markdown = File.ReadAllText(path);
@@ -27,10 +41,15 @@ namespace Parser.Markdown
             var content = ParseContent(document);
 
             var linkedContent = ParseLinkedContents(document);
+            var folder = Path.GetDirectoryName(path);
 
             string acceptedDetailIndex = string.Empty;
             foreach (var linked in linkedContent)
             {
+                if (linked.Source == Sources.Markdown)
+                {
+                    linked.Path = Path.Combine(folder, linked.Path + ".md");
+                }
                 acceptedDetailIndex += linked.BulletItem;
             }
 

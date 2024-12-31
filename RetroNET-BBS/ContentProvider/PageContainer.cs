@@ -10,5 +10,10 @@ namespace RetroNET_BBS.ContentProvider
         {
             return Pages.FirstOrDefault(p => p.Hash == hash);
         }
+
+        public static Page FindPageFromPath(string path)
+        {
+            return Pages.FirstOrDefault(p => p.Link == path);
+        }
     }
 }
