@@ -17,7 +17,6 @@ namespace Parser.Markdown
 
             if (!string.IsNullOrEmpty(link.Url))
             {
-                //var url = AideDeJeu.Tools.Helpers.RemoveDiacritics(link.Url).Replace(".md#", "_") + ".md";
                 renderer.Write('(').Write(link.Url);
 
                 if (!string.IsNullOrEmpty(link.Title))

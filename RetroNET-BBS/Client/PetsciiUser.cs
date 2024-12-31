@@ -1,5 +1,6 @@
 ﻿using Common.Dto;
 using Common.Enum;
+using Encoder;
 using Parser.Markdown;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
@@ -87,7 +88,7 @@ namespace RetroNET_BBS.Client
                 switch (currentPage.Source)
                 {
                     case Sources.Markdown:
-                        output = MarkdownStatic.GetHome(currentPage.Content, petsciiEncoder);
+                        output = Markdown.GetHome(currentPage.Content, petsciiEncoder);
                         break;
                         //case Sources.Rss:
                         //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);

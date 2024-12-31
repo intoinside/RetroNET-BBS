@@ -13,7 +13,7 @@ var config = builder.Build();
 var folder = config["Path"];
 var homePath = Path.Combine(folder, "index.md");
 
-PageContainer.Pages = MarkdownStatic.ParseAllFiles(folder);
+PageContainer.Pages = Markdown.ParseAllFiles(folder);
 
 var svr = new Server("127.0.0.1");
 await svr.Start();
