@@ -11,6 +11,10 @@ namespace RetroNET_BBS.Client
 {
     public class PetsciiUser : User
     {
+        const char QuitCommand = 'q';
+        const char HomeCommand = ',';
+        const char BackCommand = '.';
+
         Stack<Page> history = new Stack<Page>();
         bool connectionDone = false;
 
@@ -46,7 +50,14 @@ namespace RetroNET_BBS.Client
             Page currentPage = PageContainer.Pages.First();
             do
             {
-                if (commandArrived != '.')
+                if (commandArrived == HomeCommand)
+                {
+                    history.Clear();
+                    currentPage = PageContainer.Pages.First();
+                    history.Push(currentPage);
+                }
+
+                if (commandArrived != BackCommand)
                 {
                     history.Push(currentPage);
 
@@ -73,21 +84,19 @@ namespace RetroNET_BBS.Client
                 //    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
                 //}
 
-                //pages = MarkdownDataSource.Instance.GetHome(petsciiEncoder);
-
                 switch (currentPage.Source)
                 {
                     case Sources.Markdown:
                         output = MarkdownStatic.GetHome(currentPage.Content, petsciiEncoder);
                         break;
-                    //case Sources.Rss:
-                    //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
-                    //    break;
+                        //case Sources.Rss:
+                        //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
+                        //    break;
                 }
 
                 //output = pages.Content;
 
-                output += Footer.ShowFooter("q] quit .] back ", Colors.Yellow);
+                output += Footer.ShowFooter(QuitCommand + "] quit " + HomeCommand + "] home " + BackCommand + "] back ", Colors.Yellow);
                 response = petsciiEncoder.FromAscii(output, true);
                 await stream.WriteAsync(response, 0, response.Length);
 
@@ -120,15 +129,17 @@ namespace RetroNET_BBS.Client
 
         private char HandleInput(string receivedMessage, string acceptedNavigationOptions)
         {
-            if (string.Equals(receivedMessage, "q", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(receivedMessage, QuitCommand.ToString(), StringComparison.InvariantCultureIgnoreCase))
             {
                 Disconnect();
                 return (char)0;
             }
 
-            if (string.Equals(receivedMessage, ".", StringComparison.InvariantCultureIgnoreCase))
+            switch (receivedMessage[0])
             {
-                return '.';
+                case HomeCommand:
+                case BackCommand:
+                    return receivedMessage[0];
             }
 
             if (acceptedNavigationOptions.Contains(receivedMessage))
