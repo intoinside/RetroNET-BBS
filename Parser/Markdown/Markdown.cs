@@ -5,9 +5,9 @@ using Markdig.Syntax;
 using Parser.Markdown.Dto;
 using Common.Dto;
 using System.Text;
-using System.Security.Cryptography;
 using Encoder;
 using Common.Utils;
+using System;
 
 namespace Parser.Markdown
 {
@@ -48,14 +48,13 @@ namespace Parser.Markdown
             {
                 if (linked.Source == Sources.Markdown)
                 {
-                    linked.Path = Path.Combine(folder, linked.Path + ".md");
+                    linked.Link = Path.Combine(folder, linked.Link + ".md");
                 }
                 acceptedDetailIndex += linked.BulletItem;
             }
 
             Page page = new Page()
             {
-                Hash = Convert.ToHexString(SHA1.HashData(Encoding.UTF8.GetBytes(path))),
                 Source = Sources.Markdown,
                 Link = path,
                 Title = heading,
@@ -214,7 +213,7 @@ namespace Parser.Markdown
 
                     var bulletNumber = i + 1 + (i < 9 ? 48 : 55);
 
-                    linkedContentsType.Add(new ContentsType() { Path = item.Link, BulletItem = (char)bulletNumber, Source = item.Type });
+                    linkedContentsType.Add(new ContentsType() { Link = item.Link, BulletItem = (char)bulletNumber, Source = item.Type });
                 }
             }
 
@@ -235,8 +234,6 @@ namespace Parser.Markdown
                     var ininline = (LinkInline)inline;
                     var label = ininline.ToMarkdownString();
                     var title = ininline.Title;
-
-                    //text = "<markdown title=\"" + (string.IsNullOrWhiteSpace(title) ? label : title) + "\" url=\"" + url + "\">";
 
                     output.Title = string.IsNullOrWhiteSpace(title) ? label : title;
                     output.Link = ininline.Url;

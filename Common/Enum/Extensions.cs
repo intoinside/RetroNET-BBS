@@ -2,8 +2,16 @@
 
 namespace Common.Enum
 {
+    /// <summary>
+    /// Extensions for Enum
+    /// </summary>
     public static class Extensions
     {
+        /// <summary>
+        /// Get the description of the enum in string format
+        /// </summary>
+        /// <param name="enumValue">Enum to get</param>
+        /// <returns>String description</returns>
         public static string GetDescription(this System.Enum enumValue)
         {
             var field = enumValue.GetType().GetField(enumValue.ToString());

@@ -1,5 +1,8 @@
 ﻿namespace Common.Utils
 {
+    /// <summary>
+    /// String utilities
+    /// </summary>
     public static class StringUtils
     {
         /// <summary>

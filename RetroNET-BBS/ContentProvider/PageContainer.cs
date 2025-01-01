@@ -6,11 +6,6 @@ namespace RetroNET_BBS.ContentProvider
     {
         public static List<Page> Pages = new List<Page>();
 
-        public static Page FindPage(string hash)
-        {
-            return Pages.FirstOrDefault(p => p.Hash == hash);
-        }
-
         public static Page FindPageFromPath(string path)
         {
             return Pages.FirstOrDefault(p => p.Link == path);

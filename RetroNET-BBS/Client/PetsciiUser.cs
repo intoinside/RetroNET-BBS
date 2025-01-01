@@ -65,7 +65,7 @@ namespace RetroNET_BBS.Client
                     var nextPage = currentPage.LinkedContentsType.Where(x => x.BulletItem == commandArrived);
                     if (nextPage.Any())
                     {
-                        currentPage = PageContainer.FindPageFromPath(nextPage.Single().Path);
+                        currentPage = PageContainer.FindPageFromPath(nextPage.Single().Link);
                     }
                 }
                 else

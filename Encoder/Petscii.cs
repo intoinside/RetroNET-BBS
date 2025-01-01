@@ -21,6 +21,7 @@
         /// <returns>Stream cleaned</returns>
         public string Cleaner(string stream)
         {
+            // Accented chars
             stream = stream.Replace("È", "E'", false, null);
             stream = stream.Replace("à", "a'", false, null);
             stream = stream.Replace("è", "e'", false, null);

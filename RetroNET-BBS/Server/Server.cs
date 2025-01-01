@@ -12,8 +12,13 @@ namespace RetroNET_BBS.Server
 
         private int clientConnectedCount;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="host"></param>
         public Server(string host)
         {
+            listener = null;
             IpAddress = "192.168.1.2";
             Port = 8502;
         }
@@ -21,7 +26,7 @@ namespace RetroNET_BBS.Server
         /// <summary>
         /// Creates a new server instance and starts listening for incoming connections.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Task</returns>
         /// <exception cref="InvalidOperationException"></exception>
         public async Task Start()
         {
