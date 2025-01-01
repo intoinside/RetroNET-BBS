@@ -11,7 +11,7 @@ namespace RetroNET_BBS.Server
         private readonly int Port;
         private ConnectionType connectionType;
 
-        private static int clientConnectedCount;
+        private static int clientConnectedCount = 0;
 
         /// <summary>
         /// Constructor
@@ -40,8 +40,6 @@ namespace RetroNET_BBS.Server
             IPAddress localAddr = IPAddress.Parse(IpAddress);
             listener = new TcpListener(localAddr, Port);
             listener.Start();
-
-            clientConnectedCount = 0;
 
             OnMessageReceived("Server started on port " + Port.ToString().PadLeft(5) + ". Waiting for a connection...");
 
