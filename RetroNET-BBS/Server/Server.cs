@@ -9,18 +9,20 @@ namespace RetroNET_BBS.Server
         private TcpListener listener;
         private readonly string IpAddress;
         private readonly int Port;
+        private ConnectionType connectionType;
 
-        private int clientConnectedCount;
+        private static int clientConnectedCount;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="host"></param>
-        public Server(string host)
+        public Server(string host, int port, ConnectionType type)
         {
             listener = null;
-            IpAddress = "192.168.1.2";
-            Port = 8502;
+            IpAddress = host;
+            Port = port;
+            connectionType = type;
         }
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace RetroNET_BBS.Server
 
             clientConnectedCount = 0;
 
-            OnMessageReceived("Server started. Waiting for a connection...");
+            OnMessageReceived("Server started on port " + Port.ToString().PadLeft(5) + ". Waiting for a connection...");
 
             while (true)
             {
@@ -69,7 +71,7 @@ namespace RetroNET_BBS.Server
             clientConnectedCount++;
 
             await Task.Yield();
-            await HandleClientAsync(client);
+            await HandleClientAsync(client, connectionType);
         }
 
         public void Stop()
@@ -83,9 +85,19 @@ namespace RetroNET_BBS.Server
         /// </summary>
         /// <param name="client">Client handled</param>
         /// <returns>Task</returns>
-        private async Task HandleClientAsync(TcpClient client)
+        private async Task HandleClientAsync(TcpClient client, ConnectionType connectionType)
         {
-            var user = new PetsciiUser(client, clientConnectedCount);
+            User user = null;
+            switch (connectionType)
+            {
+                case ConnectionType.Petscii:
+                    user = new PetsciiUser(client, clientConnectedCount);
+                    break;
+                case ConnectionType.Telnet:
+                    user = new TelnetUser(client, clientConnectedCount);
+                    break;
+            }
+
             user.OnUserDisconnect = () =>
             {
                 clientConnectedCount--;

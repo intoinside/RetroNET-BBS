@@ -6,7 +6,6 @@ using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
 using System.Net.Sockets;
-using System.Text;
 
 namespace RetroNET_BBS.Client
 {
@@ -16,34 +15,36 @@ namespace RetroNET_BBS.Client
         const char HomeCommand = ',';
         const char BackCommand = '.';
 
-        Stack<Page> history = new Stack<Page>();
-        bool connectionDone = false;
+        //bool connectionDone = false;
 
         public PetsciiUser(TcpClient client, int onlineUsers) : base(client)
         {
+            encoder = new Petscii();
+
             HandleConnection(onlineUsers);
         }
 
         public async Task HandleConnection(int onlineUsers)
         {
-            var petsciiEncoder = new Petscii();
-
             NetworkStream stream = client.GetStream();
 
             byte[] buffer = new byte[1024];
 
             // Show welcome page
-            var output = WelcomePage.ShowWelcome(onlineUsers);
-            byte[] response = petsciiEncoder.FromAscii(output);
-            await stream.WriteAsync(response, 0, response.Length);
+            //var output = WelcomePage.ShowWelcome(onlineUsers);
+            //byte[] response = encoder.FromAscii(output);
+            //await stream.WriteAsync(response, 0, response.Length);
+            var output = await ShowWelcomePage(onlineUsers, stream);
 
-            // Not clear why this is needed but whatever
-            await stream.ReadAsync(buffer, 0, buffer.Length);
-            string input;
-            do
-            {
-                input = await HandleConnectionFlow(stream, buffer);
-            } while (input.Length == 0);
+            byte[] response;
+
+            //// Not clear why this is needed but whatever
+            //await stream.ReadAsync(buffer, 0, buffer.Length);
+            //string input;
+            //do
+            //{
+            //    input = await HandleConnectionFlow(stream, buffer);
+            //} while (input.Length == 0);
 
             string acceptedNavigationOptions = string.Empty;
             char commandArrived = (char)0;
@@ -65,7 +66,7 @@ namespace RetroNET_BBS.Client
                     var nextPage = currentPage.LinkedContentsType.Where(x => x.BulletItem == commandArrived);
                     if (nextPage.Any())
                     {
-                        currentPage = PageContainer.FindPageFromPath(nextPage.Single().Link);
+                        currentPage = PageContainer.FindPageFromLink(nextPage.Single().Link);
                     }
                 }
                 else
@@ -88,7 +89,7 @@ namespace RetroNET_BBS.Client
                 switch (currentPage.Source)
                 {
                     case Sources.Markdown:
-                        output = Markdown.GetHome(currentPage.Content, petsciiEncoder);
+                        output = Markdown.GetHome(currentPage.Content, encoder);
                         break;
                         //case Sources.Rss:
                         //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
@@ -98,7 +99,7 @@ namespace RetroNET_BBS.Client
                 //output = pages.Content;
 
                 output += Footer.ShowFooter(QuitCommand + "] quit " + HomeCommand + "] home " + BackCommand + "] back ", Colors.Yellow);
-                response = petsciiEncoder.FromAscii(output, true);
+                response = encoder.FromAscii(output, true);
                 await stream.WriteAsync(response, 0, response.Length);
 
                 commandArrived = (char)0;
@@ -106,27 +107,27 @@ namespace RetroNET_BBS.Client
                 // Receive data in a loop until the client disconnects
                 while (!connectionDone && commandArrived == (char)0)
                 {
-                    input = await HandleConnectionFlow(stream, buffer);
+                    string input = await HandleConnectionFlow(stream, buffer);
 
                     commandArrived = HandleInput(input, currentPage.AcceptedDetailIndex);
                 }
             } while (!connectionDone);
         }
 
-        private async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer)
-        {
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+        //private async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer)
+        //{
+        //    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
 
-            if (bytesRead == 0)
-            {
-                Disconnect();
+        //    if (bytesRead == 0)
+        //    {
+        //        Disconnect();
 
-                connectionDone = true;
-            }
+        //        connectionDone = true;
+        //    }
 
-            string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-            return data;
-        }
+        //    string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+        //    return data;
+        //}
 
         private char HandleInput(string receivedMessage, string acceptedNavigationOptions)
         {
@@ -151,11 +152,11 @@ namespace RetroNET_BBS.Client
             return (char)0;
         }
 
-        private void Disconnect()
-        {
-            OnUserDisconnect();
-            connectionDone = true;
-            client.Close();
-        }
+        //private void Disconnect()
+        //{
+        //    OnUserDisconnect();
+        //    connectionDone = true;
+        //    client.Close();
+        //}
     }
 }

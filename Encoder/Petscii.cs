@@ -17,12 +17,12 @@
         /// Provide conversion and cleaning of input string in order to
         /// be compliant to the selected encoding.
         /// </summary>
-        /// <param name="stream">Stream to clean</param>
+        /// <param name="input">Stream to clean</param>
         /// <returns>Stream cleaned</returns>
-        public string Cleaner(string stream)
+        public string Cleaner(string input)
         {
             // Accented chars
-            stream = stream.Replace("È", "E'", false, null);
+            var stream = input.Replace("È", "E'", false, null);
             stream = stream.Replace("à", "a'", false, null);
             stream = stream.Replace("è", "e'", false, null);
             stream = stream.Replace("é", "e'", false, null);
