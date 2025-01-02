@@ -1,7 +1,9 @@
-﻿using System.Text;
-
-namespace Encoder
+﻿namespace Encoder
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Petscii"/> class.
+    /// </summary>
+    /// <param name="streamToConvert">The ASCII string to be converted for Telnet connection.</param>
     public class Telnet : IEncoder
     {
         /// <summary>
@@ -11,17 +13,47 @@ namespace Encoder
         {
         }
 
+        /// <summary>
+        /// Provide conversion and cleaning of input string in order to
+        /// be compliant to the selected encoding.
+        /// </summary>
+        /// <param name="input">Stream to clean</param>
+        /// <returns>Stream cleaned</returns>
         public string Cleaner(string input)
         {
             return input;
         }
 
+        /// <summary>
+        /// Number of rows
+        /// </summary>
+        /// <returns>Number of rows for encoding</returns>
+        public int NumberOfRows()
+        {
+            return 25;
+        }
+
+        /// <summary>
+        /// Number of characters per row
+        /// </summary>
+        /// <returns>Number of column for encoding</returns>
+        public int NumberOfColumns()
+        {
+            return 80;
+        }
+
+        /// <summary>
+        /// Converts an ASCII string to a byte array.
+        /// </summary>
+        /// <param name="stream">Stream to be converted</param>
+        /// <param name="clearPage">Whether to clear the page before writing the stream</param>
+        /// <returns>A byte array representing the encoded ASCII string.</returns>
         public byte[] FromAscii(string stream, bool clearPage = false)
         {
             // Clear page if requested
             if (clearPage)
             {
-                stream = new String((char)147, 1) + stream;
+                stream = "\x1B[2J" + stream;
             }
 
             // Convert color tags
@@ -46,6 +78,16 @@ namespace Encoder
             stream = stream.Replace("<yellow>", "\x1B[1;33m", true, null);
             stream = stream.Replace("<cyan>", "\x1B[36m", true, null);
 
+            stream = stream.Replace("<revon>", "\x1B[7m", true, null);
+            stream = stream.Replace("<revoff>", "\x1B[7m", true, null);
+
+            // Convert position tags
+            stream = stream.Replace("<home>", "\x1B[1;1H", true, null);
+            stream = stream.Replace("<crsrdown>", "\x1B[B", true, null);
+            stream = stream.Replace("<crsrright>", "\x1B[C", true, null);
+            stream = stream.Replace("<crsrup>", "\x1B[A", true, null);
+            stream = stream.Replace("<crsrleft>", "\x1B[D", true, null);
+
             var output = new byte[stream.Length];
             for (int i = 0; i < stream.Length; i++)
             {
@@ -55,16 +97,6 @@ namespace Encoder
             }
 
             return output;
-        }
-
-        public int NumberOfColumns()
-        {
-            return 80;
-        }
-
-        public int NumberOfRows()
-        {
-            return 25;
         }
     }
 }
