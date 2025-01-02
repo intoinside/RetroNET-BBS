@@ -3,11 +3,11 @@ using System.Net.Sockets;
 
 namespace RetroNET_BBS.Client
 {
-    public class PetsciiUser : User
+    public class TelnetUser : User
     {
-        public PetsciiUser(TcpClient client, int onlineUsers) : base(client)
+        public TelnetUser(TcpClient client, int onlineUsers) : base(client)
         {
-            encoder = new Petscii();
+            encoder = new Telnet();
 
             HandleConnection(onlineUsers);
         }

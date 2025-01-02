@@ -3,18 +3,18 @@
     public class WelcomePage
     {
         private const string Welcome = "<lightred>" +
-            "***                      *  * **** ****\r" +
-            "*  *                     ** * *     *\r" +
-            "*  *  **   *   *     **  ** * *     *\r" +
-            "***  *  * ***  ***  *  * * ** ***   *\r" +
-            "**   ***   *   *  * *  * * ** *     *\r" +
-            "* *  *     * * *    *  * *  * *     *\r" +
-            "*  *  **    *  *     **  *  * ****  *\r\r\r" +
-            "<yellow>Welcome to RetroNET!\r\r" +
-            "https://bit.ly/RetroNET-BBS\r" +
-            "by Raffaele Intorcia\r\r" +
-            "<green>Current date is: {0}\r" +
-            "Online users: {1}\r";
+            "***                      *  * **** ****\r\n" +
+            "*  *                     ** * *     *\r\n" +
+            "*  *  **   *   *     **  ** * *     *\r\n" +
+            "***  *  * ***  ***  *  * * ** ***   *\r\n" +
+            "**   ***   *   *  * *  * * ** *     *\r\n" +
+            "* *  *     * * *    *  * *  * *     *\r\n" +
+            "*  *  **    *  *     **  *  * ****  *\r\n\r\n\r\n" +
+            "<yellow>Welcome to RetroNET!\r\n\r\n" +
+            "https://bit.ly/RetroNET-BBS\r\n" +
+            "by Raffaele Intorcia\r\n\r\n" +
+            "<green>Current date is {0}\r\n" +
+            "Online users: {1}\r\n";
 
         public static string ShowWelcome(int onlineUsers)
         {
