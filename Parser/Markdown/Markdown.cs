@@ -7,29 +7,51 @@ using Common.Dto;
 using System.Text;
 using Encoder;
 using Common.Utils;
-using System;
 
 namespace Parser.Markdown
 {
     public static class Markdown
     {
+        static List<Page> pageToParse = new List<Page>();
+
         public static List<Page> ParseAllFiles(string path)
         {
             List<Page> pageParsed = new List<Page>();
 
-            Directory.GetFiles(path, "*.md", SearchOption.TopDirectoryOnly)
-                .ToList()
-                .ForEach(file =>
+            var link = Path.Combine(path, "index.md");
+
+            pageParsed.Add(ParseFile(link));
+
+            while (pageToParse.Count > 0)
+            {
+                var page = pageToParse.First();
+
+                if (!pageParsed.Any(x => x.Link == page.Link))
                 {
-                    pageParsed.Add(ParseFile(file));
-                });
+                    switch (page.Source)
+                    {
+                        case Sources.Markdown:
+                            pageParsed.Add(ParseFile(Path.Combine(path, page.Link)));
+                            break;
+                        case Sources.Raw:
+                            pageParsed.Add(Raw.Raw.ParseFile(Path.Combine(path, page.Link)));
+                            break;
+                    };
+                }
+
+                pageToParse.RemoveAt(0);
+            }
 
             return pageParsed;
         }
 
-
         public static Page ParseFile(string path)
         {
+            if (!File.Exists(path))
+            {
+                path += ".md";
+            }
+
             var markdown = File.ReadAllText(path);
             var document = Markdig.Markdown.Parse(markdown);
 
@@ -49,6 +71,9 @@ namespace Parser.Markdown
                 if (linked.Source == Sources.Markdown)
                 {
                     linked.Link = Path.Combine(folder, linked.Link + ".md");
+                } else if (linked.Source == Sources.Raw)
+                {
+                    linked.Link = Path.Combine(folder, linked.Link);
                 }
                 acceptedDetailIndex += linked.BulletItem;
             }
@@ -214,6 +239,16 @@ namespace Parser.Markdown
                     var bulletNumber = i + 1 + (i < 9 ? 48 : 55);
 
                     linkedContentsType.Add(new ContentsType() { Link = item.Link, BulletItem = (char)bulletNumber, Source = item.Type });
+
+                    pageToParse.Add(new Page()
+                    {
+                        Source = item.Type,
+                        Link = item.Link,
+                        Title = item.Title,
+                        Content = string.Empty,
+                        LinkedContentsType = new List<ContentsType>(),
+                        AcceptedDetailIndex = string.Empty,
+                    });
                 }
             }
 
@@ -237,7 +272,16 @@ namespace Parser.Markdown
 
                     output.Title = string.IsNullOrWhiteSpace(title) ? label : title;
                     output.Link = ininline.Url;
-                    output.Type = Sources.Markdown;
+
+                    switch (Path.GetExtension(output.Link))
+                    {
+                        case ".md":
+                            output.Type = Sources.Markdown;
+                            break;
+                        case ".raw":
+                            output.Type = Sources.Raw;
+                            break;
+                    }
                 }
 
             }
@@ -270,6 +314,8 @@ namespace Parser.Markdown
 
             // Upper offset
             content.AppendLine("<lightgray><crsrdown><crsrdown><crsrdown><crsrdown>");
+            //var logo = File.ReadAllBytes("D:\\Documenti\\csharpbbs\\RetroNET-BBS\\site\\apulia-retrocomputing.seq");
+            //content.AppendLine(Encoding.Latin1.GetString(logo));
 
             foreach (var line in StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1))
             {

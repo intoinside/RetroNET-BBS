@@ -108,6 +108,9 @@ namespace RetroNET_BBS.Client
                         //case Sources.Rss:
                         //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
                         //    break;
+                    case Sources.Raw:
+                        output = currentPage.Content;
+                        break;
                 }
 
                 //output = pages.Content;
