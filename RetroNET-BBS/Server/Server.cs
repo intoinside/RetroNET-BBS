@@ -41,7 +41,7 @@ namespace RetroNET_BBS.Server
             listener = new TcpListener(localAddr, Port);
             listener.Start();
 
-            OnMessageReceived("Server started on port " + Port.ToString().PadLeft(5) + ". Waiting for a connection...");
+            OnMessageReceived("Server started on port  " + Port.ToString().PadLeft(5) + ". Waiting for a connection...");
 
             while (true)
             {
@@ -67,6 +67,8 @@ namespace RetroNET_BBS.Server
         private async Task Accept(TcpClient client)
         {
             clientConnectedCount++;
+
+            OnMessageReceived("New connection on port  " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
 
             await Task.Yield();
             await HandleClientAsync(client, connectionType);
@@ -94,11 +96,15 @@ namespace RetroNET_BBS.Server
                 case ConnectionType.Telnet:
                     user = new TelnetUser(client, clientConnectedCount);
                     break;
+                default:
+                    throw new NotSupportedException("Connection type not supported");
             }
 
             user.OnUserDisconnect = () =>
             {
                 clientConnectedCount--;
+
+                OnMessageReceived("Connection lost on port " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
             };
         }
 
