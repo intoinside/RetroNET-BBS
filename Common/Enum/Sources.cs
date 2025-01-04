@@ -14,5 +14,10 @@
         /// Rss feed source
         /// </summary>
         Rss,
+
+        /// <summary>
+        /// Raw file
+        /// </summary>
+        Raw,
     }
 }

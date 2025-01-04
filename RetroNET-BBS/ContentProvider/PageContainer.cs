@@ -1,4 +1,7 @@
 ﻿using Common.Dto;
+using Common.Utils;
+using Encoder;
+using System.Text;
 
 namespace RetroNET_BBS.ContentProvider
 {
@@ -20,6 +23,24 @@ namespace RetroNET_BBS.ContentProvider
         public static Page? FindPageFromLink(string link)
         {
             return Pages.FirstOrDefault(p => p.Link == link);
+        }
+
+        /// <summary>
+        ///  Get document with tag stripping based on line length
+        /// </summary>
+        /// <param name="document">Document</param>
+        /// <param name="encoder">Encoder which contains number of columns</param>
+        /// <returns>Splitted document</returns>
+        public static string GetPage(string document, IEncoder encoder)
+        {
+            var content = new StringBuilder();
+
+            foreach (var line in StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1))
+            {
+                content.AppendLine(line);
+            }
+
+            return content.ToString();
         }
     }
 }

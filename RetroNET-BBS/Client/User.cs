@@ -100,19 +100,10 @@ namespace RetroNET_BBS.Client
                 //    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
                 //}
 
-                switch (currentPage.Source)
-                {
-                    case Sources.Markdown:
-                        output = Markdown.GetHome(currentPage.Content, encoder);
-                        break;
-                        //case Sources.Rss:
-                        //    pages = RssDataSource.Instance.GetHome(pages.Source, commandArrived, petsciiEncoder);
-                        //    break;
-                }
-
-                //output = pages.Content;
+                output = PageContainer.GetPage(currentPage.Content, encoder);
 
                 output += Footer.ShowFooter(QuitCommand + "] quit " + HomeCommand + "] home " + BackCommand + "] back ", Colors.Yellow);
+
                 response = encoder.FromAscii(output, true);
                 await stream.WriteAsync(response, 0, response.Length);
 
