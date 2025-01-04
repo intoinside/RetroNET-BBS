@@ -7,13 +7,14 @@ namespace Parser.Raw
     {
         public static Page ParseFile(string path)
         {
+            var raw = File.ReadAllText(path);
 
             Page page = new Page()
             {
                 Source = Sources.Raw,
                 Link = path,
                 Title = string.Empty,
-                Content = "RAW",
+                Content = raw,
                 LinkedContentsType = new List<ContentsType>(),
                 AcceptedDetailIndex = string.Empty,
             };
