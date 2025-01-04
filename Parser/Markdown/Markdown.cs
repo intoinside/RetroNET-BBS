@@ -5,8 +5,6 @@ using Markdig.Syntax;
 using Parser.Markdown.Dto;
 using Common.Dto;
 using System.Text;
-using Encoder;
-using Common.Utils;
 
 namespace Parser.Markdown
 {
@@ -306,23 +304,6 @@ namespace Parser.Markdown
             }
 
             return output;
-        }
-
-        public static string GetHome(string document, IEncoder encoder)
-        {
-            var content = new StringBuilder();
-
-            // Upper offset
-            content.AppendLine("<lightgray><crsrdown><crsrdown><crsrdown><crsrdown>");
-            //var logo = File.ReadAllBytes("D:\\Documenti\\csharpbbs\\RetroNET-BBS\\site\\apulia-retrocomputing.seq");
-            //content.AppendLine(Encoding.Latin1.GetString(logo));
-
-            foreach (var line in StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1))
-            {
-                content.AppendLine(line);
-            }
-
-            return content.ToString();
         }
     }
 }

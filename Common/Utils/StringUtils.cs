@@ -1,4 +1,6 @@
-﻿namespace Common.Utils
+﻿using System.Text.RegularExpressions;
+
+namespace Common.Utils
 {
     /// <summary>
     /// String utilities
@@ -22,7 +24,10 @@
                 foreach (var word in words.Skip(1))
                 {
                     var test = $"{line} {word}";
-                    if (test.Length > maximumLineLength)
+
+                    // Test line lenght without tags so it won't influence
+                    var testWithoutTags = Regex.Replace(test, @"<[^>]*>", string.Empty);
+                    if (testWithoutTags.Length > maximumLineLength)
                     {
                         yield return line;
                         line = word;
