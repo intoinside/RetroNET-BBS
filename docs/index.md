@@ -1,7 +1,37 @@
 
-# Features
+RetroNET-BBS is a modern application written in C# that brings back the experience of the historic Bulletin Board Systems (BBS), integrating it with modern technologies and retro compatibility.
 
-TBD
+## Main Features
+
+### Markdown Content
+
+The BBS uses a collection of documents in Markdown format as the basis for static content.
+Documents are automatically converted into human-readable formats through retro and modern connections, ensuring smooth and clear navigation.
+
+### RSS Feed Integration
+
+The application is able to connect to public RSS feeds, download their contents and make them accessible to users through the BBS.
+Users can explore articles and titles directly from the BBS interface.
+
+### Telnet Connection Support
+
+Users can connect to the system using the Telnet protocol, compatible with modern and vintage hardware.
+The Telnet server supports multi-user authentication and management.
+
+### Petscii Encoding Compatibility
+
+RetroNET-BBS is designed to accommodate connections from vintage computers, such as the Commodore 64, using the PETSCII character set.
+Content is automatically adapted to ensure consistent display on retro terminals.
+
+### Intuitive Navigation
+
+A set of text commands allows users to explore Markdown documents, read RSS articles, and interact with the platform in an authentically retro style.
+
+### Technologies used
+* C# and .NET Core: modern and scalable backend.
+* Markdown Parser: libraries for Markdown → formatted text conversion.
+* Telnet Server: handles multiple connections and variable encodings (e.g. PETSCII).
+* RSS Feed: parsing and displaying content in real time.
 
 ## Parsers
 At this time, parsers are available for these two types of sources:
