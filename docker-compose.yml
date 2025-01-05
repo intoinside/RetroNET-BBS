@@ -1,0 +1,11 @@
+services:
+  retronet-bbs:
+    image: ${DOCKER_REGISTRY-}retronetbbs
+    build:
+      context: .
+      dockerfile: RetroNET-BBS/Dockerfile
+    ports:
+      - "23:23"
+      - "8502:8502"
+    volumes:
+      - "D:\\Documenti\\csharpbbs\\RetroNET-BBS\\site:/data"

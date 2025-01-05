@@ -7,13 +7,13 @@ using RetroNET_BBS.Server;
 
 static async void StartPetsciiServer()
 {
-    var svr = new Server("192.168.1.2", 8502, ConnectionType.Petscii);
+    var svr = new Server("0.0.0.0", 8502, ConnectionType.Petscii);
     await svr.Start();
 }
 
 static async void StartTelnetServer()
 {
-    var svr = new Server("192.168.1.2", 23, ConnectionType.Telnet);
+    var svr = new Server("0.0.0.0", 23, ConnectionType.Telnet);
     await svr.Start();
 }
 

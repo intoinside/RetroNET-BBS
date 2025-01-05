@@ -11,6 +11,9 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["RetroNET-BBS/RetroNET-BBS.csproj", "RetroNET-BBS/"]
+COPY ["Common/Common.csproj", "Common/"]
+COPY ["Encoder/Encoder.csproj", "Encoder/"]
+COPY ["Parser/Parser.csproj", "Parser/"]
 RUN dotnet restore "./RetroNET-BBS/RetroNET-BBS.csproj"
 COPY . .
 WORKDIR "/src/RetroNET-BBS"
