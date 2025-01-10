@@ -23,9 +23,25 @@ namespace Common.Dto
         public string Title { get; set; }
 
         /// <summary>
-        /// Content parsed from the source
+        /// Private content parsed from the source
         /// </summary>
-        public string Content { get; set; }
+        private string content;
+
+        /// <summary>
+        /// Content parsed from the source (with normalization)
+        /// </summary>
+        public string Content
+        {
+            get
+            {
+                return content;
+            }
+            set
+            {
+                content = value.Replace("\r\n", "\n");
+                content = content.Replace("\n", "\r\n");
+            }
+        }
 
         /// <summary>
         /// List of bullet items for the linked resources

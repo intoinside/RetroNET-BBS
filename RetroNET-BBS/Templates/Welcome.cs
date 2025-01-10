@@ -18,7 +18,7 @@
 
         public static string ShowWelcome(int onlineUsers)
         {
-            return string.Format(Welcome, DateTime.Now.ToString(), onlineUsers);
+            return string.Format(Welcome, DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss"), onlineUsers);
         }
     }
 }

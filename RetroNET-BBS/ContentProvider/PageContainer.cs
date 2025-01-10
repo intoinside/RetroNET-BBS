@@ -33,14 +33,19 @@ namespace RetroNET_BBS.ContentProvider
         /// <returns>Splitted document</returns>
         public static string GetPage(string document, IEncoder encoder)
         {
-            var content = new StringBuilder();
+            var builder = new StringBuilder();
+            using var stringWriter = new StringWriter(builder)
+            {
+                NewLine = "\r\n"
+            };
 
             foreach (var line in StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1))
             {
-                content.AppendLine(line);
+                stringWriter.WriteLine(line);
+                //builder.AppendLine(line);
             }
 
-            return content.ToString();
+            return builder.ToString();
         }
     }
 }

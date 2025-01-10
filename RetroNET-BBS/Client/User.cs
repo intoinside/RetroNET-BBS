@@ -119,7 +119,6 @@ namespace RetroNET_BBS.Client
             } while (!connectionDone);
         }
 
-
         protected async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer)
         {
             int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
