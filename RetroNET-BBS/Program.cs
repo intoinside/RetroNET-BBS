@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using Microsoft.Extensions.Configuration;
 using Parser.Markdown;
+using Parser.Raw;
 using RetroNET_BBS.Client;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Server;
@@ -27,6 +28,7 @@ var folder = config["Path"];
 var homePath = Path.Combine(folder, "index.md");
 
 PageContainer.Pages = Markdown.ParseAllFiles(folder);
+PageContainer.Imports = Seq.ParseAllFiles(folder);
 
 Thread thread1 = new Thread(StartPetsciiServer);
 thread1.IsBackground = true;

@@ -16,6 +16,11 @@ namespace RetroNET_BBS.ContentProvider
         public static List<Page> Pages = new List<Page>();
 
         /// <summary>
+        /// List of the parsed import files
+        /// </summary>
+        public static Dictionary<string, string> Imports = new Dictionary<string, string>();
+
+        /// <summary>
         /// Search for the page from the given link
         /// </summary>
         /// <param name="link">Link to search</param>
