@@ -42,7 +42,6 @@ namespace RetroNET_BBS.ContentProvider
             foreach (var line in StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1))
             {
                 stringWriter.WriteLine(line);
-                //builder.AppendLine(line);
             }
 
             return builder.ToString();

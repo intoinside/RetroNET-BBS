@@ -40,7 +40,7 @@
             stream = stream.Replace("č", "c", false, null);
             stream = stream.Replace("í", "i", false, null);
             stream = stream.Replace("ě", "e", false, null);
-            
+
             return stream;
         }
 
@@ -112,7 +112,7 @@
             var output = new byte[stream.Length];
             for (int i = 0; i < stream.Length; i++)
             {
-                var charToConvert = (int)stream[i];
+                var charToConvert = (byte)stream[i];
 
                 if (charToConvert >= 65 && charToConvert <= 90)
                 {
@@ -121,7 +121,7 @@
                 }
 
                 if (charToConvert >= 97 && charToConvert <= 122)
-                { 
+                {
                     output[i] = (byte)(charToConvert - 32);
                     continue;
                 }
