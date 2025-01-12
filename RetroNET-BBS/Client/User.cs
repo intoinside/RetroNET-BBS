@@ -47,6 +47,14 @@ namespace RetroNET_BBS.Client
             return output;
         }
 
+        public async Task SendGoodbye(TcpClient client)
+        {
+            NetworkStream stream = client.GetStream();
+            var output = GoodbyePage.ShowGoodbye();
+            byte[] response = encoder.FromAscii(output);
+            await stream.WriteAsync(response, 0, response.Length);
+        }
+
         protected async Task HandleConnection(int onlineUsers)
         {
             NetworkStream stream = client.GetStream();
@@ -136,6 +144,7 @@ namespace RetroNET_BBS.Client
         {
             if (string.Equals(receivedMessage, QuitCommand.ToString(), StringComparison.InvariantCultureIgnoreCase))
             {
+                SendGoodbye(client);
                 Disconnect();
                 return (char)0;
             }
