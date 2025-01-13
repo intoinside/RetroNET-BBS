@@ -1,4 +1,6 @@
-﻿namespace Encoder
+﻿using System.Text.RegularExpressions;
+
+namespace Encoder
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Petscii"/> class.
@@ -43,6 +45,26 @@
         }
 
         /// <summary>
+        /// Replacing import tags with empty string
+        /// </summary>
+        /// <remarks>Import tag is not supported on telnet connection</remarks>
+        /// <param name="stream">Stream with import tags</param>
+        /// <returns>Stream edited</returns>
+        public string ClearImport(string stream)
+        {
+            string pattern = @"<import\s+path=""([^""]+)"">";
+            Regex regex = new Regex(pattern);
+            MatchCollection matches = regex.Matches(stream);
+
+            foreach (Match match in matches)
+            {
+                stream = regex.Replace(stream, string.Empty);
+            }
+
+            return stream;
+        }
+
+        /// <summary>
         /// Converts an ASCII string to a byte array.
         /// </summary>
         /// <param name="stream">Stream to be converted</param>
@@ -55,6 +77,8 @@
             {
                 stream = "\x1B[2J" + stream;
             }
+
+            stream = ClearImport(stream);
 
             // Convert color tags
             stream = stream.Replace("<white>", "\x1B[1;37m", true, null);

@@ -1,4 +1,5 @@
 ﻿using Encoder;
+using RetroNET_BBS.ContentProvider;
 using System.Net.Sockets;
 
 namespace RetroNET_BBS.Client
@@ -7,7 +8,7 @@ namespace RetroNET_BBS.Client
     {
         public PetsciiUser(TcpClient client, int onlineUsers) : base(client)
         {
-            encoder = new Petscii();
+            encoder = new Petscii(PageContainer.Imports);
 
             HandleConnection(onlineUsers);
         }

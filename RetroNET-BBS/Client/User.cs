@@ -31,7 +31,7 @@ namespace RetroNET_BBS.Client
         public async Task<string> ShowWelcomePage(int onlineUsers, NetworkStream stream)
         {
             var output = WelcomePage.ShowWelcome(onlineUsers);
-            byte[] response = encoder.FromAscii(output);
+            byte[] response = encoder.FromAscii(output, true);
             await stream.WriteAsync(response, 0, response.Length);
 
             byte[] buffer = new byte[1024];
@@ -51,7 +51,7 @@ namespace RetroNET_BBS.Client
         {
             NetworkStream stream = client.GetStream();
             var output = GoodbyePage.ShowGoodbye();
-            byte[] response = encoder.FromAscii(output);
+            byte[] response = encoder.FromAscii(output, true);
             await stream.WriteAsync(response, 0, response.Length);
         }
 
@@ -127,7 +127,7 @@ namespace RetroNET_BBS.Client
 
         protected async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer)
         {
-            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+            int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
             if (bytesRead == 0)
             {
@@ -144,7 +144,7 @@ namespace RetroNET_BBS.Client
         {
             if (string.Equals(receivedMessage, QuitCommand.ToString(), StringComparison.InvariantCultureIgnoreCase))
             {
-                SendGoodbye(client);
+                SendGoodbye(client).Wait();
                 Disconnect();
                 return (char)0;
             }

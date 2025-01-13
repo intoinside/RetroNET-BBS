@@ -1,4 +1,6 @@
-﻿namespace Encoder
+﻿using System.Text.RegularExpressions;
+
+namespace Encoder
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Petscii"/> class.
@@ -6,11 +8,14 @@
     /// <param name="streamToConvert">The ASCII string to be converted to PETSCII.</param>
     public class Petscii : IEncoder
     {
+        public Dictionary<string, string> Imports { get; set; }
+
         /// <summary>
         /// Constructor
         /// </summary>
-        public Petscii()
+        public Petscii(Dictionary<string, string> imports) : base()
         {
+            Imports = imports;
         }
 
         /// <summary>
@@ -63,6 +68,26 @@
         }
 
         /// <summary>
+        /// Replacing import tags with the actual content
+        /// </summary>
+        /// <param name="stream">Stream with import tags</param>
+        /// <returns>Stream edited</returns>
+        string SetupImport(string stream)
+        {
+            string pattern = @"<import\s+path=""([^""]+)"">";
+            Regex regex = new Regex(pattern);
+            MatchCollection matches = regex.Matches(stream);
+
+            foreach (Match match in matches)
+            {
+                stream = regex.Replace(stream, Imports[match.Groups[1].Value]);
+            }
+
+            return stream;
+        }
+
+
+        /// <summary>
         /// Converts an ASCII string to a byte array.
         /// </summary>
         /// <param name="stream">Stream to be converted</param>
@@ -75,6 +100,8 @@
             {
                 stream = new String((char)147, 1) + stream;
             }
+
+            stream = SetupImport(stream);
 
             // Convert color tags
             stream = stream.Replace("<white>", new String((char)5, 1), true, null);
