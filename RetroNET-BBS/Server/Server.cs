@@ -91,21 +91,20 @@ namespace RetroNET_BBS.Server
             switch (connectionType)
             {
                 case ConnectionType.Petscii:
-                    user = new PetsciiUser(client, clientConnectedCount);
+                    user = new PetsciiUser(client, clientConnectedCount, OnUserDisconnect);
                     break;
                 case ConnectionType.Telnet:
-                    user = new TelnetUser(client, clientConnectedCount);
+                    user = new TelnetUser(client, clientConnectedCount, OnUserDisconnect);
                     break;
                 default:
                     throw new NotSupportedException("Connection type not supported");
             }
+        }
 
-            user.OnUserDisconnect = () =>
-            {
-                clientConnectedCount--;
-
-                OnMessageReceived("Connection lost on port " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
-            };
+        public void OnUserDisconnect()
+        {
+            clientConnectedCount--;
+            OnMessageReceived("Connection lost on port " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
         }
 
         protected virtual void OnMessageReceived(string message)

@@ -153,7 +153,7 @@ namespace Encoder
                     continue;
                 }
 
-                output[i] = (byte)charToConvert;
+                output[i] = charToConvert;
             }
 
             return output;

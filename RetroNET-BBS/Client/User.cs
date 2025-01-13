@@ -23,9 +23,12 @@ namespace RetroNET_BBS.Client
         protected bool connectionDone = false;
         protected Stack<Page> history = new Stack<Page>();
 
-        public User(TcpClient client)
+        private OnUserDisconnectCallback callback;
+
+        public User(TcpClient client, OnUserDisconnectCallback callback)
         {
             this.client = client;
+            this.callback = callback;
         }
 
         public async Task<string> ShowWelcomePage(int onlineUsers, NetworkStream stream)
@@ -166,7 +169,7 @@ namespace RetroNET_BBS.Client
 
         protected void Disconnect()
         {
-            OnUserDisconnect();
+            callback();
             connectionDone = true;
             client.Close();
         }

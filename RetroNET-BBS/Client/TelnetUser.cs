@@ -5,7 +5,7 @@ namespace RetroNET_BBS.Client
 {
     public class TelnetUser : User
     {
-        public TelnetUser(TcpClient client, int onlineUsers) : base(client)
+        public TelnetUser(TcpClient client, int onlineUsers, OnUserDisconnectCallback callback) : base(client, callback)
         {
             encoder = new Telnet();
 

@@ -6,7 +6,7 @@ namespace RetroNET_BBS.Client
 {
     public class PetsciiUser : User
     {
-        public PetsciiUser(TcpClient client, int onlineUsers) : base(client)
+        public PetsciiUser(TcpClient client, int onlineUsers, OnUserDisconnectCallback callback) : base(client, callback)
         {
             encoder = new Petscii(PageContainer.Imports);
 

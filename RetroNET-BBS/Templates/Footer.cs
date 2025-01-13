@@ -8,12 +8,12 @@ namespace RetroNET_BBS.Templates
         public static string ShowFooter(string navigationOptions, Colors? color = null)
         {
             // Cursor home
-            var output = "\x13";
+            var output = "<home>";
 
             // Cursor down
             for (int i = 0; i < 24; i++)
             {
-                output += "\x11";
+                output += "<crsrdown>";
             }
 
             if (color != null && Enum.IsDefined(typeof(Colors), color))

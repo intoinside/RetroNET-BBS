@@ -103,7 +103,7 @@ namespace Encoder
             stream = stream.Replace("<cyan>", "\x1B[36m", true, null);
 
             stream = stream.Replace("<revon>", "\x1B[7m", true, null);
-            stream = stream.Replace("<revoff>", "\x1B[7m", true, null);
+            stream = stream.Replace("<revoff>", "\x1B[27m", true, null);
 
             // Convert position tags
             stream = stream.Replace("<home>", "\x1B[1;1H", true, null);
