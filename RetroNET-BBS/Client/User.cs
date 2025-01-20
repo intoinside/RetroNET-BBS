@@ -17,6 +17,9 @@ namespace RetroNET_BBS.Client
         protected const char QuitCommand = 'q';
         protected const char HomeCommand = ',';
         protected const char BackCommand = '.';
+        protected const char PrevPageCommand = '-';
+        protected const char NextPageCommand = '+';
+
         protected TcpClient client;
         protected IEncoder encoder;
 
@@ -71,6 +74,7 @@ namespace RetroNET_BBS.Client
 
             string acceptedNavigationOptions = string.Empty;
             char commandArrived = (char)0;
+            int currentScreen = 1;
 
             Page currentPage = PageContainer.Pages.Where(x => x.Link.Contains("index.md")).First();
             do
@@ -80,6 +84,15 @@ namespace RetroNET_BBS.Client
                     history.Clear();
                     currentPage = PageContainer.Pages.First();
                     history.Push(currentPage);
+                    currentScreen = 1;
+                }
+                else if (commandArrived == PrevPageCommand)
+                {
+                    currentScreen--;
+                }
+                else if (commandArrived == NextPageCommand)
+                {
+                    currentScreen++;
                 }
 
                 if (commandArrived != BackCommand)
@@ -90,10 +103,12 @@ namespace RetroNET_BBS.Client
                     if (nextPage.Any())
                     {
                         currentPage = PageContainer.FindPageFromLink(nextPage.Single().Link);
+                        currentScreen = 1;
                     }
                 }
                 else
                 {
+                    currentScreen = 0;
                     if (history.Count > 0)
                     {
                         currentPage = history.Pop();
@@ -109,9 +124,15 @@ namespace RetroNET_BBS.Client
                 //    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
                 //}
 
-                output = PageContainer.GetPage(currentPage.Content, encoder);
+                output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
 
-                output += Footer.ShowFooter(QuitCommand + "] quit " + HomeCommand + "] home " + BackCommand + "] back ", Colors.Yellow);
+                output += Footer.ShowFooter(QuitCommand
+                    + "] quit "
+                    + HomeCommand + "] home "
+                    + BackCommand + "] back "
+                    + PrevPageCommand + "] -Pg "
+                    + NextPageCommand + "] +Pg"
+                    , Colors.Yellow);
 
                 response = encoder.FromAscii(output, true);
                 await stream.WriteAsync(response, 0, response.Length);
@@ -156,6 +177,8 @@ namespace RetroNET_BBS.Client
             {
                 case HomeCommand:
                 case BackCommand:
+                case PrevPageCommand:
+                case NextPageCommand:
                     return receivedMessage[0];
             }
 

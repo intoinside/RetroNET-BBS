@@ -35,8 +35,9 @@ namespace RetroNET_BBS.ContentProvider
         /// </summary>
         /// <param name="document">Document</param>
         /// <param name="encoder">Encoder which contains number of columns</param>
+        /// <param name="pageNumber">Page to show</param>
         /// <returns>Splitted document</returns>
-        public static string GetPage(string document, IEncoder encoder)
+        public static string GetPage(string document, IEncoder encoder, ref int pageNumber)
         {
             var builder = new StringBuilder();
             using var stringWriter = new StringWriter(builder)
@@ -45,10 +46,24 @@ namespace RetroNET_BBS.ContentProvider
             };
             builder.Append("<lightgray>");
 
-            var linesSplitted = StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1)
+            var linesSplitted = StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1);
+
+            int maxPageNumber = (linesSplitted.Count() / encoder.NumberOfRows()) + 1;
+
+            if (pageNumber > maxPageNumber)
+            {
+                pageNumber = maxPageNumber;
+            }
+            else if (pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
+
+            var linesToShow = linesSplitted
+                .Skip((pageNumber - 1) * encoder.NumberOfRows())
                 .Take(encoder.NumberOfRows() - 1);
 
-            foreach (var line in linesSplitted)
+            foreach (var line in linesToShow)
             {
                 stringWriter.WriteLine(line);
             }
