@@ -16,9 +16,10 @@ namespace Parser.Markdown
         {
             List<Page> pageParsed = new List<Page>();
 
-            var link = Path.Combine(path, "index.md");
-
-            pageParsed.Add(ParseFile(link));
+            foreach (var file in Directory.GetFiles(path))
+            {
+                pageParsed.Add(ParseFile(file));
+            }
 
             while (pageToParse.Count > 0)
             {
@@ -69,7 +70,8 @@ namespace Parser.Markdown
                 if (linked.Source == Sources.Markdown)
                 {
                     linked.Link = Path.Combine(folder, linked.Link + ".md");
-                } else if (linked.Source == Sources.Raw)
+                }
+                else if (linked.Source == Sources.Raw)
                 {
                     linked.Link = Path.Combine(folder, linked.Link);
                 }
@@ -114,6 +116,8 @@ namespace Parser.Markdown
                         continue;
                     }
 
+                    output.Append("\r\n");
+
                     var enumerator = heading.Inline.GetEnumerator();
                     while (enumerator.MoveNext())
                     {
@@ -143,6 +147,12 @@ namespace Parser.Markdown
                             if (inline is LinkInline)
                             {
                                 var ininline = (LinkInline)inline;
+
+                                if (ininline.Url.StartsWith("http://") || ininline.Url.StartsWith("https://"))
+                                {
+                                    continue;
+                                }
+
                                 var label = ininline.ToMarkdownString();
                                 var title = ininline.Title;
 
@@ -154,7 +164,6 @@ namespace Parser.Markdown
 
                                 bulletIndex++;
                             }
-
                         }
                         else if (block[0] is HtmlBlock)
                         {
@@ -226,6 +235,7 @@ namespace Parser.Markdown
 
             var allLinks = document.Descendants<ListBlock>().ToArray();
 
+            var bulletIndex = 1;
             foreach (var list in allLinks)
             {
                 for (var i = 0; i < list.Count; i++)
@@ -234,19 +244,29 @@ namespace Parser.Markdown
 
                     MarkdownItemDto item = FillItem(block[0]);
 
-                    var bulletNumber = i + 1 + (i < 9 ? 48 : 55);
+                    if (item.Link.StartsWith("http://") || item.Link.StartsWith("https://") || string.IsNullOrWhiteSpace(item.Link))
+                    {
+                        continue;
+                    }
+
+                    var bulletNumber = bulletIndex + (bulletIndex < 10 ? 48 : 55);
 
                     linkedContentsType.Add(new ContentsType() { Link = item.Link, BulletItem = (char)bulletNumber, Source = item.Type });
 
-                    pageToParse.Add(new Page()
-                    {
-                        Source = item.Type,
-                        Link = item.Link,
-                        Title = item.Title,
-                        Content = string.Empty,
-                        LinkedContentsType = new List<ContentsType>(),
-                        AcceptedDetailIndex = string.Empty,
-                    });
+                    //if (!pageToParse.Where(x => x.Link == item.Link).Any())
+                    //{
+                    //    pageToParse.Add(new Page()
+                    //    {
+                    //        Source = item.Type,
+                    //        Link = item.Link,
+                    //        Title = item.Title,
+                    //        Content = string.Empty,
+                    //        LinkedContentsType = new List<ContentsType>(),
+                    //        AcceptedDetailIndex = string.Empty,
+                    //    });
+
+                    //    bulletIndex++;
+                    bulletIndex++;
                 }
             }
 

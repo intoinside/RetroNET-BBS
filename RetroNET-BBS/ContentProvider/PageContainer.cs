@@ -43,8 +43,12 @@ namespace RetroNET_BBS.ContentProvider
             {
                 NewLine = "\r\n"
             };
+            builder.Append("<lightgray>");
 
-            foreach (var line in StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1))
+            var linesSplitted = StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1)
+                .Take(encoder.NumberOfRows() - 1);
+
+            foreach (var line in linesSplitted)
             {
                 stringWriter.WriteLine(line);
             }

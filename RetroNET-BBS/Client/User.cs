@@ -72,7 +72,7 @@ namespace RetroNET_BBS.Client
             string acceptedNavigationOptions = string.Empty;
             char commandArrived = (char)0;
 
-            Page currentPage = PageContainer.Pages.First();
+            Page currentPage = PageContainer.Pages.Where(x => x.Link.Contains("index.md")).First();
             do
             {
                 if (commandArrived == HomeCommand)
