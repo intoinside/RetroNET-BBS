@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Encoder
 {
@@ -8,6 +9,13 @@ namespace Encoder
     /// <param name="streamToConvert">The ASCII string to be converted for Telnet connection.</param>
     public class Telnet : IEncoder
     {
+        /// <summary>
+        /// Map to convert ASCII to Telnet escape sequences
+        /// </summary>
+        private static Dictionary<string, string> ConversionMap = new Dictionary<string, string>()
+        {
+        };
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -122,5 +130,16 @@ namespace Encoder
 
             return output;
         }
+
+        public string ToAscii(byte[] buffer, int bytesRead)
+        {
+            if (Encoding.ASCII.GetString(buffer, 0, bytesRead) == "\x1b[C")
+            {
+                return "<csrright>";
+            }
+
+            return Encoding.ASCII.GetString(buffer, 0, bytesRead);
+        }
+
     }
 }

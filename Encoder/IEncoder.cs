@@ -32,5 +32,13 @@
         /// <param name="clearPage">Whether to clear the page before writing the stream</param>
         /// <returns>A byte array representing the encoded ASCII string.</returns>
         byte[] FromAscii(string stream, bool clearPage = false);
+
+        /// <summary>
+        /// Converts a byte array to ASCII.
+        /// </summary>
+        /// <param name="buffer">Byte array to be converted</param>
+        /// <param name="bytesRead">Number of bytes in bytearray</param>
+        /// <returns>A string representing the encoded byte array.</returns>
+        string ToAscii(byte[] buffer, int bytesRead);
     }
 }

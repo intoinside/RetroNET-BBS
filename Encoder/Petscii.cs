@@ -1,14 +1,51 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Encoder
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Petscii"/> class.
     /// </summary>
-    /// <param name="streamToConvert">The ASCII string to be converted to PETSCII.</param>
     public class Petscii : IEncoder
     {
         public Dictionary<string, string> Imports { get; set; }
+
+        /// <summary>
+        /// Map to convert ASCII to PETSCII
+        /// </summary>
+        private static Dictionary<string, string> ConversionMap = new Dictionary<string, string>() { 
+            // Convert color tags
+            { "<white>",  new String((char)5, 1) },
+            { "<red>",  new String((char)28, 1) },
+            { "<green>",  new String((char)30, 1) },
+            { "<blue>",  new String((char)31, 1) },
+            { "<orange>",  new String((char)129, 1) },
+            { "<black>",  new String((char)144, 1) },
+            { "<brown>",  new String((char)149, 1) },
+            { "<lightred>",  new String((char)150, 1) },
+            { "<pink>",  new String((char)150, 1) },
+            { "<darkgray>",  new String((char)151, 1) },
+            { "<darkgrey>",  new String((char)151, 1) },
+            { "<gray>",  new String((char)152, 1) },
+            { "<grey>",  new String((char)152, 1) },
+            { "<lightgreen>",  new String((char)153, 1) },
+            { "<lightblue>",  new String((char)154, 1) },
+            { "<lightgray>",  new String((char)155, 1) },
+            { "<lightgrey>",  new String((char)155, 1) },
+            { "<purple>",  new String((char)156, 1) },
+            { "<yellow>",  new String((char)158, 1) },
+            { "<cyan>",  new String((char)159, 1) },
+
+            { "<revon>",  new String((char)18, 1) },
+            { "<revoff>",  new String((char)146, 1) },
+
+            // Convert position tags
+            { "<home>",  new String((char)19, 1) },
+            { "<crsrdown>",  new String((char)17, 1) },
+            { "<crsrright>",  new String((char)29, 1) },
+            { "<crsrup>",  new String((char)145, 1) },
+            { "<crsrleft>",  new String((char)157, 1) },
+        };
 
         /// <summary>
         /// Constructor
@@ -103,37 +140,10 @@ namespace Encoder
 
             stream = SetupImport(stream);
 
-            // Convert color tags
-            stream = stream.Replace("<white>", new String((char)5, 1), true, null);
-            stream = stream.Replace("<red>", new String((char)28, 1), true, null);
-            stream = stream.Replace("<green>", new String((char)30, 1), true, null);
-            stream = stream.Replace("<blue>", new String((char)31, 1), true, null);
-            stream = stream.Replace("<orange>", new String((char)129, 1), true, null);
-            stream = stream.Replace("<black>", new String((char)144, 1), true, null);
-            stream = stream.Replace("<brown>", new String((char)149, 1), true, null);
-            stream = stream.Replace("<lightred>", new String((char)150, 1), true, null);
-            stream = stream.Replace("<pink>", new String((char)150, 1), true, null);
-            stream = stream.Replace("<darkgray>", new String((char)151, 1), true, null);
-            stream = stream.Replace("<darkgrey>", new String((char)151, 1), true, null);
-            stream = stream.Replace("<gray>", new String((char)152, 1), true, null);
-            stream = stream.Replace("<grey>", new String((char)152, 1), true, null);
-            stream = stream.Replace("<lightgreen>", new String((char)153, 1), true, null);
-            stream = stream.Replace("<lightblue>", new String((char)154, 1), true, null);
-            stream = stream.Replace("<lightgray>", new String((char)155, 1), true, null);
-            stream = stream.Replace("<lightgrey>", new String((char)155, 1), true, null);
-            stream = stream.Replace("<purple>", new String((char)156, 1), true, null);
-            stream = stream.Replace("<yellow>", new String((char)158, 1), true, null);
-            stream = stream.Replace("<cyan>", new String((char)159, 1), true, null);
-
-            stream = stream.Replace("<revon>", new String((char)18, 1), true, null);
-            stream = stream.Replace("<revoff>", new String((char)146, 1), true, null);
-
-            // Convert position tags
-            stream = stream.Replace("<home>", new String((char)19, 1), true, null);
-            stream = stream.Replace("<crsrdown>", new String((char)17, 1), true, null);
-            stream = stream.Replace("<crsrright>", new String((char)29, 1), true, null);
-            stream = stream.Replace("<crsrup>", new String((char)145, 1), true, null);
-            stream = stream.Replace("<crsrleft>", new String((char)157, 1), true, null);
+            foreach (var entry in ConversionMap)
+            {
+                stream = stream.Replace(entry.Key, entry.Value, true, null);
+            }
 
             // Fix upper/lower case
             var output = new byte[stream.Length];
@@ -157,6 +167,23 @@ namespace Encoder
             }
 
             return output;
+        }
+
+        /// <summary>
+        /// Converts a byte array to ASCII.
+        /// </summary>
+        /// <param name="buffer">Byte array to be converted</param>
+        /// <param name="bytesRead">Number of bytes in bytearray</param>
+        /// <returns>A string representing the encoded byte array.</returns>
+        public string ToAscii(byte[] buffer, int bytesRead)
+        {
+            var stream = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            foreach (var entry in ConversionMap)
+            {
+                stream = stream.Replace(entry.Value, entry.Key, true, null);
+            }
+
+            return Encoding.ASCII.GetString(buffer, 0, bytesRead);
         }
     }
 }
