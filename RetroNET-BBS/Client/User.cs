@@ -4,7 +4,6 @@ using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
 using System.Net.Sockets;
-using System.Text;
 
 namespace RetroNET_BBS.Client
 {
@@ -47,7 +46,7 @@ namespace RetroNET_BBS.Client
             string input;
             do
             {
-                input = await HandleConnectionFlow(stream, buffer);
+                input = await HandleConnectionFlow(stream, buffer, encoder);
             } while (input.Length == 0);
 
             return output;
@@ -142,14 +141,14 @@ namespace RetroNET_BBS.Client
                 // Receive data in a loop until the client disconnects
                 while (!connectionDone && commandArrived == (char)0)
                 {
-                    string input = await HandleConnectionFlow(stream, buffer);
+                    string input = await HandleConnectionFlow(stream, buffer, encoder);
 
                     commandArrived = HandleInput(input, currentPage.AcceptedDetailIndex);
                 }
             } while (!connectionDone);
         }
 
-        protected async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer)
+        protected async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer, IEncoder encoder)
         {
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
@@ -160,7 +159,8 @@ namespace RetroNET_BBS.Client
                 connectionDone = true;
             }
 
-            string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            string data = encoder.ToAscii(buffer, bytesRead);
+
             return data;
         }
 
