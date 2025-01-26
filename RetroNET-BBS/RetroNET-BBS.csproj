@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\Encoder\Encoder.csproj" />
     <ProjectReference Include="..\Parser\Parser.csproj" />
+    <ProjectReference Include="..\SampleDynamicContent\SampleDynamicContent.csproj" />
   </ItemGroup>
 
   <ItemGroup>

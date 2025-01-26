@@ -1,9 +1,12 @@
 ﻿using Common.Dto;
 using Encoder;
+using Parser;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
+using SampleDynamicContent;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace RetroNET_BBS.Client
 {
@@ -63,8 +66,6 @@ namespace RetroNET_BBS.Client
         {
             NetworkStream stream = client.GetStream();
 
-            //byte[] buffer = new byte[1024];
-
             // Show welcome page
             var output = await ShowWelcomePage(onlineUsers, stream);
 
@@ -79,6 +80,14 @@ namespace RetroNET_BBS.Client
             Page currentPage = indexPage;
             while (!connectionDone)
             {
+                Type type = Type.GetType("SampleDynamicContent.MoveCursorOnScreen, SampleDynamicContent"); //target type
+                object o = Activator.CreateInstance(type); // an instance of target type
+                IDynamicContent your = (IDynamicContent)o;
+
+                your.HandleConnectionFlow(stream, encoder);
+
+
+
                 // Draws the page
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
 

@@ -15,6 +15,8 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetsciiRawConverter", "PetsciiRawConverter\PetsciiRawConverter.csproj", "{4069880E-4918-4E36-B3E8-A5657E3AC570}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleDynamicContent", "SampleDynamicContent\SampleDynamicContent.csproj", "{AED985BA-8A25-4189-9C65-A45B195DF29A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{4069880E-4918-4E36-B3E8-A5657E3AC570}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4069880E-4918-4E36-B3E8-A5657E3AC570}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4069880E-4918-4E36-B3E8-A5657E3AC570}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AED985BA-8A25-4189-9C65-A45B195DF29A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AED985BA-8A25-4189-9C65-A45B195DF29A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AED985BA-8A25-4189-9C65-A45B195DF29A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AED985BA-8A25-4189-9C65-A45B195DF29A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
