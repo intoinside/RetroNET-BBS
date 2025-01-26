@@ -16,8 +16,8 @@ namespace RetroNET_BBS.Client
         protected const char QuitCommand = 'q';
         protected const char HomeCommand = ',';
         protected const char BackCommand = '.';
-        protected const char PrevPageCommand = '-';
-        protected const char NextPageCommand = '+';
+        protected const char PrevScreenCommand = '-';
+        protected const char NextScreenCommand = '+';
 
         protected TcpClient client;
         protected IEncoder encoder;
@@ -39,14 +39,13 @@ namespace RetroNET_BBS.Client
             byte[] response = encoder.FromAscii(output, true);
             await stream.WriteAsync(response, 0, response.Length);
 
-            byte[] buffer = new byte[1024];
+            //var buffer = new byte[1024];
+            //int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
-            // Not clear why this is needed but whatever
-            await stream.ReadAsync(buffer, 0, buffer.Length);
             string input;
             do
             {
-                input = await HandleConnectionFlow(stream, buffer, encoder);
+                input = await HandleConnectionFlow(stream, encoder);
             } while (input.Length == 0);
 
             return output;
@@ -64,7 +63,7 @@ namespace RetroNET_BBS.Client
         {
             NetworkStream stream = client.GetStream();
 
-            byte[] buffer = new byte[1024];
+            //byte[] buffer = new byte[1024];
 
             // Show welcome page
             var output = await ShowWelcomePage(onlineUsers, stream);
@@ -75,27 +74,63 @@ namespace RetroNET_BBS.Client
             char commandArrived = (char)0;
             int currentScreen = 1;
 
-            Page currentPage = PageContainer.Pages.Where(x => x.Link.Contains("index.md")).First();
-            do
+            Page indexPage = PageContainer.Pages.Where(x => x.Link.Contains("index.md")).First();
+
+            Page currentPage = indexPage;
+            while (!connectionDone)
             {
+                // Draws the page
+                output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
+
+                // Add footer to output stream
+                output += Footer.ShowFooter(QuitCommand
+                    + "] quit "
+                    + HomeCommand + "] home "
+                    + BackCommand + "] back "
+                    + PrevScreenCommand + "] -Scr "
+                    + NextScreenCommand + "] +Scr"
+                    , Colors.Yellow);
+
+                // Encode the output stream correctly
+                response = encoder.FromAscii(output, true);
+
+                // Send the output stream to the client
+                await stream.WriteAsync(response, 0, response.Length);
+
+                string input = await HandleConnectionFlow(stream, encoder);
+
+                commandArrived = HandleInput(input, currentPage.AcceptedDetailIndex);
+
                 if (commandArrived == HomeCommand)
                 {
+                    // Home command, clear history and start from the first page
                     history.Clear();
-                    currentPage = PageContainer.Pages.First();
+                    currentPage = indexPage;
                     history.Push(currentPage);
                     currentScreen = 1;
                 }
-                else if (commandArrived == PrevPageCommand)
+                else if (commandArrived == BackCommand)
                 {
+                    //Back command, go back to the previous page
+                    currentScreen = 1;
+                    if (history.Count > 0)
+                    {
+                        currentPage = history.Pop();
+                    }
+                }
+                else if (commandArrived == PrevScreenCommand)
+                {
+                    // Go to the previous screen on the current page
                     currentScreen--;
                 }
-                else if (commandArrived == NextPageCommand)
+                else if (commandArrived == NextScreenCommand)
                 {
+                    // Go to the next screen on the current page
                     currentScreen++;
                 }
-
-                if (commandArrived != BackCommand)
+                else
                 {
+                    // It's not a navigation command, so it's a link to another page
                     history.Push(currentPage);
 
                     var nextPage = currentPage.LinkedContentsType.Where(x => x.BulletItem == commandArrived);
@@ -105,51 +140,20 @@ namespace RetroNET_BBS.Client
                         currentScreen = 1;
                     }
                 }
-                else
-                {
-                    currentScreen = 0;
-                    if (history.Count > 0)
-                    {
-                        currentPage = history.Pop();
-                    }
-                }
-
-                //if (commandArrived == (char)0 || commandArrived == 'i')
-                //{
-                //    pages = RssDataSource.Instance.GetHome(url, petsciiEncoder);
-                //}
-                //else
-                //{
-                //    pages = RssDataSource.Instance.GetPage(url, commandArrived, petsciiEncoder);
-                //}
 
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
-
-                output += Footer.ShowFooter(QuitCommand
-                    + "] quit "
-                    + HomeCommand + "] home "
-                    + BackCommand + "] back "
-                    + PrevPageCommand + "] -Pg "
-                    + NextPageCommand + "] +Pg"
-                    , Colors.Yellow);
-
-                response = encoder.FromAscii(output, true);
-                await stream.WriteAsync(response, 0, response.Length);
-
-                commandArrived = (char)0;
-
-                // Receive data in a loop until the client disconnects
-                while (!connectionDone && commandArrived == (char)0)
-                {
-                    string input = await HandleConnectionFlow(stream, buffer, encoder);
-
-                    commandArrived = HandleInput(input, currentPage.AcceptedDetailIndex);
-                }
-            } while (!connectionDone);
+            }
         }
 
-        protected async Task<string> HandleConnectionFlow(NetworkStream stream, byte[] buffer, IEncoder encoder)
+        /// <summary>
+        /// Reads the stream and decodes it to ASCII.
+        /// </summary>
+        /// <param name="stream">Client stream</param>
+        /// <param name="encoder">Encoder to decode into ASCII</param>
+        /// <returns></returns>
+        protected async Task<string> HandleConnectionFlow(NetworkStream stream, IEncoder encoder)
         {
+            var buffer = new byte[1024];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
             if (bytesRead == 0)
@@ -164,6 +168,12 @@ namespace RetroNET_BBS.Client
             return data;
         }
 
+        /// <summary>
+        /// Check input stream if is valid for the current page or if is a navigation command.
+        /// </summary>
+        /// <param name="receivedMessage">Message receviced</param>
+        /// <param name="acceptedNavigationOptions">Accepted options for the current page</param>
+        /// <returns></returns>
         protected char HandleInput(string receivedMessage, string acceptedNavigationOptions)
         {
             if (string.Equals(receivedMessage, QuitCommand.ToString(), StringComparison.InvariantCultureIgnoreCase))
@@ -173,13 +183,13 @@ namespace RetroNET_BBS.Client
                 return (char)0;
             }
 
-            switch (receivedMessage[0])
+            switch (receivedMessage.First())
             {
                 case HomeCommand:
                 case BackCommand:
-                case PrevPageCommand:
-                case NextPageCommand:
-                    return receivedMessage[0];
+                case PrevScreenCommand:
+                case NextScreenCommand:
+                    return receivedMessage.First();
             }
 
             if (acceptedNavigationOptions.Contains(receivedMessage))
