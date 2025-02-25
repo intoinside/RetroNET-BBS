@@ -1,0 +1,50 @@
+@startuml
+
+interface IEncoder {
+  {abstract} string Cleaner(string input)
+  {abstract} int NumberOfRows()
+  {abstract} int NumberOfColumns()
+  {abstract} byte[] FromAscii(string stream, bool clearPage = false)
+  {abstract} string ToAscii(byte[] buffer, int bytesRead)
+}
+
+class Petscii {
+  + string Cleaner(string input)
+  + int NumberOfRows()
+  + int NumberOfColumns()
+  + byte[] FromAscii(string stream, bool clearPage = false)
+  + string ToAscii(byte[] buffer, int bytesRead)
+  - string SetupImport(string stream)
+}
+
+class Telnet {
+  + string Cleaner(string input)
+  + int NumberOfRows()
+  + int NumberOfColumns()
+  + string ClearImport(string stream)
+  + byte[] FromAscii(string stream, bool clearPage = false)
+  + string ToAscii(byte[] buffer, int bytesRead)
+}
+
+interface IDynamicContent {
+  {abstract} Task<string> HandleConnectionFlow(NetworkStream stream, IEncoder encoder)
+}
+class MoveCursorOnScreen
+
+abstract class User {
+  + User(TcpClient client, OnUserDisconnectCallback callback);
+}
+class TelnetUser
+class PetsciiUser
+
+class Server
+
+IEncoder <|-- Petscii
+IEncoder <|-- Telnet
+
+IDynamicContent <|-- MoveCursorOnScreen
+
+User <|-- TelnetUser
+User <|-- PetsciiUser
+
+@enduml

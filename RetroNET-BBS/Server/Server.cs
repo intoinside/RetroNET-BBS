@@ -6,7 +6,7 @@ namespace RetroNET_BBS.Server
 {
     public class Server
     {
-        private TcpListener listener;
+        private TcpListener? listener;
         private readonly string IpAddress;
         private readonly int Port;
         private ConnectionType connectionType;
@@ -76,6 +76,11 @@ namespace RetroNET_BBS.Server
 
         public void Stop()
         {
+            if (listener == null)
+            {
+                return;
+            }
+
             listener.Stop();
             listener = null;
         }
@@ -87,7 +92,7 @@ namespace RetroNET_BBS.Server
         /// <returns>Task</returns>
         private async Task HandleClientAsync(TcpClient client, ConnectionType connectionType)
         {
-            User user = null;
+            User? user = null;
             switch (connectionType)
             {
                 case ConnectionType.Petscii:

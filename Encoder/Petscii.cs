@@ -108,7 +108,7 @@ namespace Encoder
         /// </summary>
         /// <param name="stream">Stream with import tags</param>
         /// <returns>Stream edited</returns>
-        string SetupImport(string stream)
+        private string SetupImport(string stream)
         {
             string pattern = @"<import\s+path=""([^""]+)"">";
             Regex regex = new Regex(pattern);
@@ -121,7 +121,6 @@ namespace Encoder
 
             return stream;
         }
-
 
         /// <summary>
         /// Converts an ASCII string to a byte array.

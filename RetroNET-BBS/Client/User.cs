@@ -84,8 +84,6 @@ namespace RetroNET_BBS.Client
 
                 your.HandleConnectionFlow(stream, encoder);
 
-
-
                 // Draws the page
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
 

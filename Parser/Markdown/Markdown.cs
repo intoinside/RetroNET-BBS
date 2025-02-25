@@ -16,7 +16,7 @@ namespace Parser.Markdown
         {
             List<Page> pageParsed = new List<Page>();
 
-            foreach (var file in Directory.GetFiles(path))
+            foreach (var file in Directory.GetFiles(path, "*.md"))
             {
                 pageParsed.Add(ParseFile(file));
             }
@@ -253,19 +253,6 @@ namespace Parser.Markdown
 
                     linkedContentsType.Add(new ContentsType() { Link = item.Link, BulletItem = (char)bulletNumber, Source = item.Type });
 
-                    //if (!pageToParse.Where(x => x.Link == item.Link).Any())
-                    //{
-                    //    pageToParse.Add(new Page()
-                    //    {
-                    //        Source = item.Type,
-                    //        Link = item.Link,
-                    //        Title = item.Title,
-                    //        Content = string.Empty,
-                    //        LinkedContentsType = new List<ContentsType>(),
-                    //        AcceptedDetailIndex = string.Empty,
-                    //    });
-
-                    //    bulletIndex++;
                     bulletIndex++;
                 }
             }
