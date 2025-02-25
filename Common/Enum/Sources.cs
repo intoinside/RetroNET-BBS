@@ -19,5 +19,10 @@
         /// Raw file
         /// </summary>
         Raw,
+
+        /// <summary>
+        /// Dynamic content
+        /// </summary>
+        Dynamic,
     }
 }

@@ -4,9 +4,7 @@ using Parser;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
-using SampleDynamicContent;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 
 namespace RetroNET_BBS.Client
 {
