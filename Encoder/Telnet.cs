@@ -4,9 +4,8 @@ using System.Text.RegularExpressions;
 namespace Encoder
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Petscii"/> class.
+    /// Provides an encoder for Telnet connection. Screen size is 80x25 and import files are not supported.
     /// </summary>
-    /// <param name="streamToConvert">The ASCII string to be converted for Telnet connection.</param>
     public class Telnet : IEncoder
     {
         /// <summary>
@@ -52,42 +51,22 @@ namespace Encoder
         {
         }
 
-        /// <summary>
-        /// Provide conversion and cleaning of input string in order to
-        /// be compliant to the selected encoding.
-        /// </summary>
-        /// <param name="input">Stream to clean</param>
-        /// <returns>Stream cleaned</returns>
         public string Cleaner(string input)
         {
             return input;
         }
 
-        /// <summary>
-        /// Number of rows
-        /// </summary>
-        /// <returns>Number of rows for encoding</returns>
         public int NumberOfRows()
         {
             return 25;
         }
 
-        /// <summary>
-        /// Number of characters per row
-        /// </summary>
-        /// <returns>Number of column for encoding</returns>
         public int NumberOfColumns()
         {
             return 80;
         }
 
-        /// <summary>
-        /// Replacing import tags with empty string
-        /// </summary>
-        /// <remarks>Import tag is not supported on telnet connection</remarks>
-        /// <param name="stream">Stream with import tags</param>
-        /// <returns>Stream edited</returns>
-        public string ClearImport(string stream)
+        private string ClearImport(string stream)
         {
             string pattern = @"<import\s+path=""([^""]+)"">";
             Regex regex = new Regex(pattern);
@@ -101,12 +80,6 @@ namespace Encoder
             return stream;
         }
 
-        /// <summary>
-        /// Converts an ASCII string to a byte array.
-        /// </summary>
-        /// <param name="stream">Stream to be converted</param>
-        /// <param name="clearPage">Whether to clear the page before writing the stream</param>
-        /// <returns>A byte array representing the encoded ASCII string.</returns>
         public byte[] FromAscii(string stream, bool clearPage = false)
         {
             // Clear page if requested

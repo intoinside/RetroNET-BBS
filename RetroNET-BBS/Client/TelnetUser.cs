@@ -9,7 +9,7 @@ namespace RetroNET_BBS.Client
         {
             encoder = new Telnet();
 
-            HandleConnection(onlineUsers);
+            HandleConnection(onlineUsers).Wait();
         }
     }
 }

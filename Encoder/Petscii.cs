@@ -4,11 +4,14 @@ using System.Text.RegularExpressions;
 namespace Encoder
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Petscii"/> class.
+    /// Provides an encoder for Petscii connection. Screen size is 40x25 and import files are supported.
     /// </summary>
     public class Petscii : IEncoder
     {
-        public Dictionary<string, string> Imports { get; set; }
+        /// <summary>
+        /// Map for replacing Import tags
+        /// </summary>
+        private Dictionary<string, string> imports { get; set; }
 
         /// <summary>
         /// Map to convert ASCII to PETSCII
@@ -51,15 +54,9 @@ namespace Encoder
         /// </summary>
         public Petscii(Dictionary<string, string> imports) : base()
         {
-            Imports = imports;
+            this.imports = imports;
         }
 
-        /// <summary>
-        /// Provide conversion and cleaning of input string in order to
-        /// be compliant to the selected encoding.
-        /// </summary>
-        /// <param name="input">Stream to clean</param>
-        /// <returns>Stream cleaned</returns>
         public string Cleaner(string input)
         {
             // Accented chars
@@ -85,29 +82,16 @@ namespace Encoder
             return stream;
         }
 
-        /// <summary>
-        /// Number of rows
-        /// </summary>
-        /// <returns>Number of rows for encoding</returns>
         public int NumberOfRows()
         {
             return 25;
         }
 
-        /// <summary>
-        /// Number of characters per row
-        /// </summary>
-        /// <returns>Number of column for encoding</returns>
         public int NumberOfColumns()
         {
             return 40;
         }
 
-        /// <summary>
-        /// Replacing import tags with the actual content
-        /// </summary>
-        /// <param name="stream">Stream with import tags</param>
-        /// <returns>Stream edited</returns>
         private string SetupImport(string stream)
         {
             string pattern = @"<import\s+path=""([^""]+)"">";
@@ -116,18 +100,12 @@ namespace Encoder
 
             foreach (Match match in matches)
             {
-                stream = regex.Replace(stream, Imports[match.Groups[1].Value]);
+                stream = regex.Replace(stream, imports[match.Groups[1].Value]);
             }
 
             return stream;
         }
 
-        /// <summary>
-        /// Converts an ASCII string to a byte array.
-        /// </summary>
-        /// <param name="stream">Stream to be converted</param>
-        /// <param name="clearPage">Whether to clear the page before writing the stream</param>
-        /// <returns>A byte array representing the encoded ASCII string.</returns>
         public byte[] FromAscii(string stream, bool clearPage = false)
         {
             // Clear page if requested
@@ -167,12 +145,6 @@ namespace Encoder
             return output;
         }
 
-        /// <summary>
-        /// Converts a byte array to ASCII.
-        /// </summary>
-        /// <param name="buffer">Byte array to be converted</param>
-        /// <param name="bytesRead">Number of bytes in bytearray</param>
-        /// <returns>A string representing the encoded byte array.</returns>
         public string ToAscii(byte[] buffer, int bytesRead)
         {
             var stream = Encoding.ASCII.GetString(buffer, 0, bytesRead);

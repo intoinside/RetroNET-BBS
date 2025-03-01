@@ -18,7 +18,7 @@ namespace RetroNET_BBS.Client
                 stream.Read(buffer, 0, buffer.Length);
             }
 
-            HandleConnection(onlineUsers);
+            HandleConnection(onlineUsers).Wait();
         }
     }
 }

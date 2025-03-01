@@ -8,10 +8,11 @@ using System.Net.Sockets;
 
 namespace RetroNET_BBS.Client
 {
+    /// <summary>
+    /// Abstract class for the user. It's base for all kind of user connections.
+    /// </summary>
     public abstract class User
     {
-        public OnUserDisconnectCallback OnUserDisconnect;
-
         public delegate void OnUserDisconnectCallback();
 
         protected const char QuitCommand = 'q';
@@ -26,18 +27,33 @@ namespace RetroNET_BBS.Client
         protected bool connectionDone = false;
         protected Stack<Page> history = new Stack<Page>();
 
+        /// <summary>
+        /// Callback when user disconnects
+        /// </summary>
         private OnUserDisconnectCallback callback;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="client">Client connected</param>
+        /// <param name="callback">Callback when user disconnects</param>
         public User(TcpClient client, OnUserDisconnectCallback callback)
         {
             this.client = client;
             this.callback = callback;
         }
 
-        public async Task<string> ShowWelcomePage(int onlineUsers, NetworkStream stream)
+        /// <summary>
+        /// Sends a goodbye message to the client
+        /// </summary>
+        /// <param name="onlineUsers">Number of online users</param>
+        /// <returns>Task</returns>
+        private async Task<string> ShowWelcomePage(int onlineUsers)
         {
             var output = WelcomePage.ShowWelcome(onlineUsers);
             byte[] response = encoder.FromAscii(output, true);
+
+            var stream = client.GetStream();
             await stream.WriteAsync(response, 0, response.Length);
 
             //var buffer = new byte[1024];
@@ -46,26 +62,36 @@ namespace RetroNET_BBS.Client
             string input;
             do
             {
-                input = await HandleConnectionFlow(stream, encoder);
+                input = await HandleConnectionFlow(encoder);
             } while (input.Length == 0);
 
             return output;
         }
 
-        public async Task SendGoodbye(TcpClient client)
+        /// <summary>
+        /// Sends a goodbye message to the client
+        /// </summary>
+        /// <returns>Task</returns>
+        private async Task SendGoodbye()
         {
-            NetworkStream stream = client.GetStream();
+            var stream = client.GetStream();
             var output = GoodbyePage.ShowGoodbye();
             byte[] response = encoder.FromAscii(output, true);
             await stream.WriteAsync(response, 0, response.Length);
         }
 
+        /// <summary>
+        /// Handle the connection flow
+        /// </summary>
+        /// <param name="onlineUsers"></param>
+        /// <param name="stream">Stream for the client connected</param>
+        /// <returns></returns>
         protected async Task HandleConnection(int onlineUsers)
         {
-            NetworkStream stream = client.GetStream();
-
             // Show welcome page
-            var output = await ShowWelcomePage(onlineUsers, stream);
+            var stream = client.GetStream();
+
+            var output = await ShowWelcomePage(onlineUsers);
 
             byte[] response;
 
@@ -73,16 +99,17 @@ namespace RetroNET_BBS.Client
             char commandArrived = (char)0;
             int currentScreen = 1;
 
+            // Always start with an index.md page
             Page indexPage = PageContainer.Pages.Where(x => x.Link.Contains("index.md")).First();
 
             Page currentPage = indexPage;
             while (!connectionDone)
             {
-                Type type = Type.GetType("SampleDynamicContent.MoveCursorOnScreen, SampleDynamicContent"); //target type
-                object o = Activator.CreateInstance(type); // an instance of target type
-                IDynamicContent your = (IDynamicContent)o;
+                //Type type = Type.GetType("SampleDynamicContent.MoveCursorOnScreen, SampleDynamicContent"); //target type
+                //object o = Activator.CreateInstance(type); // an instance of target type
+                //IDynamicContent your = (IDynamicContent)o;
 
-                your.HandleConnectionFlow(stream, encoder);
+                //your.HandleConnectionFlow(stream, encoder);
 
                 // Draws the page
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
@@ -102,7 +129,7 @@ namespace RetroNET_BBS.Client
                 // Send the output stream to the client
                 await stream.WriteAsync(response, 0, response.Length);
 
-                string input = await HandleConnectionFlow(stream, encoder);
+                string input = await HandleConnectionFlow(encoder);
 
                 commandArrived = HandleInput(input, currentPage.AcceptedDetailIndex);
 
@@ -153,11 +180,11 @@ namespace RetroNET_BBS.Client
         /// <summary>
         /// Reads the stream and decodes it to ASCII.
         /// </summary>
-        /// <param name="stream">Client stream</param>
         /// <param name="encoder">Encoder to decode into ASCII</param>
         /// <returns></returns>
-        protected async Task<string> HandleConnectionFlow(NetworkStream stream, IEncoder encoder)
+        protected async Task<string> HandleConnectionFlow(IEncoder encoder)
         {
+            var stream = client.GetStream();
             var buffer = new byte[1024];
             int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
@@ -183,7 +210,7 @@ namespace RetroNET_BBS.Client
         {
             if (string.Equals(receivedMessage, QuitCommand.ToString(), StringComparison.InvariantCultureIgnoreCase))
             {
-                SendGoodbye(client).Wait();
+                SendGoodbye().Wait();
                 Disconnect();
                 return (char)0;
             }
