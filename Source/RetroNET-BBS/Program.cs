@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Parser.Markdown;
 using Parser.Raw;
 using RetroNET_BBS.Client;
@@ -18,7 +17,7 @@ static async void StartTelnetServer()
     await svr.Start();
 }
 
-Console.WriteLine("Hello, World!");
+Console.WriteLine("Hello, World! This is RetroNET-BBS!");
 
 // Start document import
 var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json");
@@ -27,9 +26,13 @@ var config = builder.Build();
 var folder = config["Path"];
 var homePath = Path.Combine(folder, "index.md");
 
+Console.WriteLine("Parsing pages...");
 PageContainer.Pages = Markdown.ParseAllFiles(folder);
+
+Console.WriteLine("Parsing imports...");
 PageContainer.Imports = Seq.ParseAllFiles(folder);
 
+Console.WriteLine("Starting servers...");
 Thread thread1 = new Thread(StartPetsciiServer);
 thread1.IsBackground = true;
 thread1.Start();

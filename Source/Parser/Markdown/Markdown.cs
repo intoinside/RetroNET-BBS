@@ -295,19 +295,27 @@ namespace Parser.Markdown
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(((HtmlBlock)item).Lines.ToString());
 
+                if (doc.DocumentNode.FirstChild.Name == "dynamic")
+                {
+                    output.Type = Sources.Dynamic;
+                }
+                else
+                {
+                    output.Type = Sources.Rss;
+                }
+
                 foreach (var attribute in doc.DocumentNode.FirstChild.Attributes)
                 {
                     if (attribute.Name == "title")
                     {
                         output.Title = attribute.Value;
                     }
-                    else if (attribute.Name == "url")
+                    else if (attribute.Name == "url" || attribute.Name == "pluginname")
                     {
                         output.Link = attribute.Value;
                     }
                 }
 
-                output.Type = Sources.Rss;
             }
 
             return output;
