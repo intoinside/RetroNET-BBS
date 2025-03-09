@@ -10,8 +10,11 @@ namespace Parser.Markdown
 {
     public static class Markdown
     {
-        static List<Page> pageToParse = new List<Page>();
-
+        /// <summary>
+        /// Parse all markdown files in the given path
+        /// </summary>
+        /// <param name="path">Path to parse</param>
+        /// <returns>List of <seealso cref="Page"/></returns>
         public static List<Page> ParseAllFiles(string path)
         {
             List<Page> pageParsed = new List<Page>();
@@ -21,29 +24,14 @@ namespace Parser.Markdown
                 pageParsed.Add(ParseFile(file));
             }
 
-            while (pageToParse.Count > 0)
-            {
-                var page = pageToParse.First();
-
-                if (!pageParsed.Any(x => x.Link == page.Link))
-                {
-                    switch (page.Source)
-                    {
-                        case Sources.Markdown:
-                            pageParsed.Add(ParseFile(Path.Combine(path, page.Link)));
-                            break;
-                        case Sources.Raw:
-                            pageParsed.Add(Raw.Raw.ParseFile(Path.Combine(path, page.Link)));
-                            break;
-                    };
-                }
-
-                pageToParse.RemoveAt(0);
-            }
-
             return pageParsed;
         }
 
+        /// <summary>
+        /// Parse a single markdown file
+        /// </summary>
+        /// <param name="path">Path of file to parse</param>
+        /// <returns>File parsed in <seealso cref="Page"/></returns>
         public static Page ParseFile(string path)
         {
             if (!File.Exists(path))
@@ -54,16 +42,19 @@ namespace Parser.Markdown
             var markdown = File.ReadAllText(path);
             var document = Markdig.Markdown.Parse(markdown);
 
+            // Get the heading of the document
             var heading = document.Descendants<HeadingBlock>()
                 .ToArray()
                 .Select(hb => hb.Inline.FirstChild.ToString())
                 .First();
 
+            // Parse file content
             var content = ParseContent(document);
 
+            // Parse linked contents
             var linkedContent = ParseLinkedContents(document);
-            var folder = Path.GetDirectoryName(path);
 
+            var folder = Path.GetDirectoryName(path);
             string acceptedDetailIndex = string.Empty;
             foreach (var linked in linkedContent)
             {
@@ -75,6 +66,7 @@ namespace Parser.Markdown
                 {
                     linked.Link = Path.Combine(folder, linked.Link);
                 }
+
                 acceptedDetailIndex += linked.BulletItem;
             }
 
@@ -228,6 +220,7 @@ namespace Parser.Markdown
 
             return output.ToString();
         }
+
 
         private static List<ContentsType> ParseLinkedContents(MarkdownDocument document)
         {
