@@ -237,11 +237,6 @@ namespace Parser.Markdown
 
                     MarkdownItemDto item = FillItem(block[0]);
 
-                    if (item.Link.StartsWith("http://") || item.Link.StartsWith("https://") || string.IsNullOrWhiteSpace(item.Link))
-                    {
-                        continue;
-                    }
-
                     var bulletNumber = bulletIndex + (bulletIndex < 10 ? 48 : 55);
 
                     linkedContentsType.Add(new ContentsType() { Link = item.Link, BulletItem = (char)bulletNumber, Source = item.Type });

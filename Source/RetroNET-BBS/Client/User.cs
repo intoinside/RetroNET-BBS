@@ -166,11 +166,13 @@ namespace RetroNET_BBS.Client
                     history.Push(currentPage);
 
                     var nextPage = currentPage.LinkedContentsType.Where(x => x.BulletItem == commandArrived);
-                    if (nextPage.Any())
-                    {
-                        currentPage = PageContainer.FindPageFromLink(nextPage.Single().Link);
-                        currentScreen = 1;
-                    }
+                    currentPage = PageContainer.GetNextContent(nextPage.Single(), encoder);
+                    currentScreen = 1;
+                    //if (nextPage.Any())
+                    //{
+                    //    currentPage = PageContainer.FindPageFromLink(nextPage.Single().Link);
+                    //    currentScreen = 1;
+                    //}
                 }
 
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);

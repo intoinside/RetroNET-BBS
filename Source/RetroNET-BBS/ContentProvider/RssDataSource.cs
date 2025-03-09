@@ -39,7 +39,15 @@ namespace RetroNET_BBS.ContentProvider
 
         public Page GetHome(string url, IEncoder encoder)
         {
-            var mainFeed = feeds[url];
+            FeedDto? mainFeed;
+            if (feeds.ContainsKey(url))
+            {
+                mainFeed = feeds[url];
+            }
+            else
+            {
+                mainFeed = RequestFeed(url);
+            }
 
             var articleAvailableToShow = (encoder.NumberOfRows() - 8) / 2;
             var acceptedDetailIndex = string.Empty;

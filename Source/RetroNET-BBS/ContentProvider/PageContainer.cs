@@ -1,4 +1,5 @@
 ﻿using Common.Dto;
+using Common.Enum;
 using Common.Utils;
 using Encoder;
 using System.Text;
@@ -28,6 +29,22 @@ namespace RetroNET_BBS.ContentProvider
         public static Page? FindPageFromLink(string link)
         {
             return Pages.FirstOrDefault(p => p.Link == link);
+        }
+
+        public static Page? GetNextContent(ContentsType content, IEncoder encoder)
+        {
+            switch (content.Source)
+            {
+                case Sources.Markdown:
+                    return FindPageFromLink(content.Link);
+                case Sources.Rss:
+                    return RssDataSource.Instance.GetHome(content.Link, encoder);
+                case Sources.Raw:
+                case Sources.Dynamic:
+                    throw new NotImplementedException();
+                default:
+                    return null;
+            }
         }
 
         /// <summary>
