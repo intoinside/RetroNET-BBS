@@ -1,5 +1,8 @@
 ﻿namespace RetroNET_BBS.Templates
 {
+    /// <summary>
+    /// Welcome page template
+    /// </summary>
     public class WelcomePage
     {
         private const string Welcome = "<lightred>" +

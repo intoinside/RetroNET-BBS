@@ -3,6 +3,9 @@ using Common.Enum;
 
 namespace Parser.Raw
 {
+    /// <summary>
+    /// Raw parser
+    /// </summary>
     public static class Raw
     {
         public static Page ParseFile(string path)

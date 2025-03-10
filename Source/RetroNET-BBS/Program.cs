@@ -5,12 +5,18 @@ using RetroNET_BBS.Client;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Server;
 
+/// <summary>
+/// Start a new instance of the Petscii server
+/// </summary>
 static async void StartPetsciiServer()
 {
     var svr = new Server("0.0.0.0", 8502, ConnectionType.Petscii);
     await svr.Start();
 }
 
+/// <summary>
+/// Start a new instance of the Telnet server
+/// </summary>
 static async void StartTelnetServer()
 {
     var svr = new Server("0.0.0.0", 23, ConnectionType.Telnet);
@@ -47,8 +53,5 @@ while (true)
 {
     Thread.Sleep(1000);
 }
-
-//var svr = new Server("192.168.1.2", 8502);
-//await svr.Start();
 
 Console.WriteLine("Goodbye, World!");

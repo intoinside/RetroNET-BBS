@@ -4,6 +4,9 @@ using System.Xml.Linq;
 
 namespace Parser.Rss
 {
+    /// <summary>
+    /// Rss parser
+    /// </summary>
     public class Rss
     {
         private string url;
@@ -13,12 +16,11 @@ namespace Parser.Rss
             url = rssUrl;
         }
 
+        /// <summary>
+        /// Gets and parses the feed starting for a given url
+        /// </summary>
+        /// <returns>Feed parsed</returns>
         public FeedDto GetFeed()
-        {
-            return ParseFeed();
-        }
-
-        private FeedDto ParseFeed()
         {
             FeedDto entries = new FeedDto();
 
@@ -54,16 +56,6 @@ namespace Parser.Rss
 
             return entries;
         }
-
-        //public string Title()
-        //{
-        //    return index.Title;
-        //}
-
-        //public Pages Home()
-        //{
-        //    return index;
-        //}
 
         private DateTime ParseDate(string date)
         {

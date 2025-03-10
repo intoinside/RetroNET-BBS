@@ -4,6 +4,9 @@ using RetroNET_BBS.Client;
 
 namespace RetroNET_BBS.Server
 {
+    /// <summary>
+    /// Server class
+    /// </summary>
     public class Server
     {
         private TcpListener? listener;
@@ -62,8 +65,8 @@ namespace RetroNET_BBS.Server
         /// <summary>
         /// Accepts a new client connection and starts a new task to handle the client.
         /// </summary>
-        /// <param name="client"></param>
-        /// <returns></returns>
+        /// <param name="client">Client connected</param>
+        /// <returns>Task</returns>
         private async Task Accept(TcpClient client)
         {
             clientConnectedCount++;
@@ -74,6 +77,9 @@ namespace RetroNET_BBS.Server
             await HandleClientAsync(client, connectionType);
         }
 
+        /// <summary>
+        /// Stop the current server instance
+        /// </summary>
         public void Stop()
         {
             if (listener == null)
@@ -106,12 +112,19 @@ namespace RetroNET_BBS.Server
             }
         }
 
+        /// <summary>
+        /// Callback when user disconnects
+        /// </summary>
         public void OnUserDisconnect()
         {
             clientConnectedCount--;
             OnMessageReceived("Connection lost on port " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
         }
 
+        /// <summary>
+        /// Callback when a message is received
+        /// </summary>
+        /// <param name="message"></param>
         protected virtual void OnMessageReceived(string message)
         {
             Console.WriteLine(message);

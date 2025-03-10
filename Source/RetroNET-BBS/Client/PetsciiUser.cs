@@ -4,8 +4,17 @@ using System.Net.Sockets;
 
 namespace RetroNET_BBS.Client
 {
+    /// <summary>
+    /// User connection for Petscii
+    /// </summary>
     public class PetsciiUser : User
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="client">Client connected</param>
+        /// <param name="onlineUsers">Number of online users</param>
+        /// <param name="callback">Callback when user disconnects</param>
         public PetsciiUser(TcpClient client, int onlineUsers, OnUserDisconnectCallback callback) : base(client, callback)
         {
             encoder = new Petscii(PageContainer.Imports);

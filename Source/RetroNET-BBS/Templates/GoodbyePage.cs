@@ -1,5 +1,8 @@
 ﻿namespace RetroNET_BBS.Templates
 {
+    /// <summary>
+    /// Goodbye page template
+    /// </summary>
     public class GoodbyePage
     {
         private const string Goodbye = "<lightred>Goodbye!\r\n\r\n" +

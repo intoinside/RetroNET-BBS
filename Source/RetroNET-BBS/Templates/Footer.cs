@@ -3,6 +3,9 @@ using RetroNET_BBS.Encoders;
 
 namespace RetroNET_BBS.Templates
 {
+    /// <summary>
+    /// Footer template
+    /// </summary>
     public class Footer
     {
         public static string ShowFooter(string navigationOptions, Colors? color = null)

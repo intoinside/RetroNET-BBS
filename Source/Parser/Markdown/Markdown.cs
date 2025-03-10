@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Parser.Markdown
 {
+    /// <summary>
+    /// Markdown parser
+    /// </summary>
     public static class Markdown
     {
         /// <summary>

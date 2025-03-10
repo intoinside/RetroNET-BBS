@@ -2,6 +2,9 @@
 
 namespace Parser.Markdown
 {
+    /// <summary>
+    /// Markdown parser extensions
+    /// </summary>
     public static class MarkdownExtensions
     {
         public static string ToMarkdownString(this Markdig.Syntax.Inlines.ContainerInline inlines)
