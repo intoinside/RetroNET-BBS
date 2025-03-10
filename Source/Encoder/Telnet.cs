@@ -53,7 +53,12 @@ namespace Encoder
 
         public string Cleaner(string input)
         {
-            return input;
+            var stream = input.Replace("“", "\"");
+            stream = stream.Replace("”", "\"");
+            stream = stream.Replace("’", "'");
+            stream = stream.Replace("‘", "'");
+
+            return stream;
         }
 
         public int NumberOfRows()
@@ -89,10 +94,6 @@ namespace Encoder
             }
 
             stream = ClearImport(stream);
-
-            stream = stream.Replace("’", "'");
-            stream = stream.Replace("“", "\"");
-            stream = stream.Replace("”", "\"");
 
             foreach (var entry in ConversionMap)
             {

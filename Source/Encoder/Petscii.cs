@@ -70,7 +70,7 @@ namespace Encoder
             stream = stream.Replace("“", "\x22", false, null);
             stream = stream.Replace("”", "\x22", false, null);
             stream = stream.Replace("’", "\x27", false, null);
-            stream = stream.Replace("&#8217;", "\x27", false, null);
+            stream = stream.Replace("‘", "\x27", false, null);
             stream = stream.Replace("–", "\x2D", false, null);
 
             // Foreign char
