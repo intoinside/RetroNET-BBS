@@ -49,7 +49,7 @@ namespace Common.Utils
         /// <returns>Bullet number with decoration</returns>
         public static string CreateBulletNumber(int bulletNumber)
         {
-            return "<revon><white> " + (char)bulletNumber + " <revoff><lightgrey>";
+            return "<white><revon> " + (char)bulletNumber + " <revoff><lightgrey>";
         }
     }
 }

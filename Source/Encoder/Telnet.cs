@@ -90,6 +90,10 @@ namespace Encoder
 
             stream = ClearImport(stream);
 
+            stream = stream.Replace("’", "'");
+            stream = stream.Replace("“", "\"");
+            stream = stream.Replace("”", "\"");
+
             foreach (var entry in ConversionMap)
             {
                 stream = stream.Replace(entry.Key, entry.Value, true, null);
