@@ -4,14 +4,13 @@ using Common.Utils;
 using Encoder;
 using Parser.Rss;
 using Parser.Rss.Dto;
-using RetroNET_BBS.Encoders;
 using System.Text;
 
 namespace RetroNET_BBS.ContentProvider
 {
     public class RssDataSource
     {
-        private Rss rss;
+        private Rss? rss;
 
         public static RssDataSource Instance => _instance.Value;
 
@@ -22,21 +21,15 @@ namespace RetroNET_BBS.ContentProvider
 
         RssDataSource()
         {
+            rss = null;
         }
 
-        public FeedDto RequestFeed(string url)
-        {
-            rss = new Rss(url);
-
-            rss.Parse();
-
-            var feed = rss.GetFeed();
-
-            feeds.Add(url, feed);
-
-            return feed;
-        }
-
+        /// <summary>
+        /// Get the home page of the given url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="encoder"></param>
+        /// <returns></returns>
         public Page GetHome(string url, IEncoder encoder)
         {
             FeedDto? mainFeed;
@@ -56,7 +49,7 @@ namespace RetroNET_BBS.ContentProvider
             var content = new StringBuilder();
 
             // Upper offset
-            content.AppendLine("<lightgray><crsrdown><crsrdown><crsrdown><crsrdown>");
+            content.AppendLine("<lightgray>");
 
             foreach (var item in mainFeed.Articles)
             {
@@ -89,34 +82,20 @@ namespace RetroNET_BBS.ContentProvider
             };
         }
 
-        public Page GetPage(string url, char selection, IEncoder encoder)
+        /// <summary>
+        /// Load a rss feed from the given url, parse it and put it in feeds array
+        /// </summary>
+        /// <param name="url">Url of rss feed</param>
+        /// <returns>Feed dto</returns>
+        private FeedDto RequestFeed(string url)
         {
-            var requestedFeed = feeds[url];
-            var rowsToShow = encoder.NumberOfRows() - 8;
+            rss = new Rss(url);
 
-            int index = 0;
-            if (selection <= 57 && selection >= 48)
-            {
-                index = selection - 48;
-            }
-            else
-            {
-                index = selection - 65;
-            }
+            var feed = rss.GetFeed();
 
-            var content = new StringBuilder();
+            feeds.Add(url, feed);
 
-            // Upper offset
-            content.AppendLine("<lightgray><crsrdown><crsrdown><crsrdown><crsrdown>");
-            content.AppendJoin('\r', StringUtils.SplitToLines(encoder.Cleaner(requestedFeed.Articles[index - 1].Content), encoder.NumberOfColumns() - 1).Take(rowsToShow));
-
-            return new Page()
-            {
-                Source = Sources.Rss,
-                Title = string.Empty,
-                Content = content.ToString(),
-                AcceptedDetailIndex = string.Empty,
-            };
+            return feed;
         }
     }
 }

@@ -31,6 +31,13 @@ namespace RetroNET_BBS.ContentProvider
             return Pages.FirstOrDefault(p => p.Link == link);
         }
 
+        /// <summary>
+        /// Get the next content based on the current content
+        /// </summary>
+        /// <param name="content">Current content</param>
+        /// <param name="encoder">Encoder to use</param>
+        /// <returns>Page for the next content</returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static Page? GetNextContent(ContentsType content, IEncoder encoder)
         {
             switch (content.Source)

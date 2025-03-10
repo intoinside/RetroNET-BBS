@@ -8,24 +8,17 @@ namespace Parser.Rss
     {
         private string url;
 
-        private FeedDto feed;
-
         public Rss(string rssUrl)
         {
             url = rssUrl;
         }
 
-        public async void Parse()
-        {
-            feed = await ParseFeed();
-        }
-
         public FeedDto GetFeed()
         {
-            return feed;
+            return ParseFeed();
         }
 
-        private async Task<FeedDto> ParseFeed()
+        private FeedDto ParseFeed()
         {
             FeedDto entries = new FeedDto();
 
@@ -60,38 +53,6 @@ namespace Parser.Rss
             }
 
             return entries;
-
-            //var content = new StringBuilder();
-
-            //int i = 0;
-            //foreach (var item in entries)
-            //{
-            //    var bulletNumber = i + (i < 9 ? 48 : 55);
-
-            //    content.Append("<revon><white> " + (char)(bulletNumber + 1) + " <revoff><lightgrey>");
-            //    content.Append(" ");
-            //    var itemTitle = item.Title.Trim();
-
-            //    content.AppendLine(StringUtils.SplitToLines(itemTitle, 31).First() + "...");
-
-            //    content.AppendLine("    " + item.PublishDate.ToString("dd/MM/yyyy HH:mm"));
-
-            //    if (i == 8)
-            //    {
-            //        break;
-            //    }
-
-            //    i++;
-            //}
-
-            //Pages page = new Pages()
-            //{
-            //    Source = Sources.Rss,
-            //    Title = title,
-            //    Content = content.ToString(),
-            //};
-
-            //return page;
         }
 
         //public string Title()
