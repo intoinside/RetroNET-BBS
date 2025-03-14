@@ -1,28 +1,39 @@
 ﻿using Encoder;
 using Parser;
-using System.Net.Sockets;
 using System.Text;
 
 namespace SampleDynamicContent
 {
-    public class MoveCursorOnScreen : IDynamicContent
+    public class MoveCursorOnScreen : ConnectionHandler
     {
-        public async Task<string> HandleConnectionFlow(NetworkStream stream, IEncoder encoder)
+        public override string Content(string navigationOptions)
         {
-            var buffer = new byte[1024];
-            var output = "<white>This is dynamic content!! <blue>So proud!";
-            byte[] response = encoder.FromAscii(output, true);
-            await stream.WriteAsync(response, 0, response.Length);
+            var output = new StringBuilder();
+            output.Append("<white>This is dynamic content!! <blue>So proud!");
 
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
-            string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-
-            HandleInput(data, encoder);
-
-            return data;
+            return output.ToString();
         }
 
-        private char HandleInput(string receivedMessage, IEncoder encoder)
+        public override string Footer(string navigationOptions)
+        {
+            var output = new StringBuilder();
+
+            // Cursor home
+            output.Append("<home>");
+
+            // Cursor down
+            for (int i = 0; i < 24; i++)
+            {
+                output.Append("<crsrdown>"); ;
+            }
+
+            output.Append(navigationOptions);
+            output.Append("FOOTER");
+
+            return output.ToString();
+        }
+
+        public override char HandleInput(string receivedMessage, IEncoder encoder)
         {
             //if (string.Equals(receivedMessage, QuitCommand.ToString(), StringComparison.InvariantCultureIgnoreCase))
             //{

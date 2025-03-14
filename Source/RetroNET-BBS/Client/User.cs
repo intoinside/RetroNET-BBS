@@ -1,5 +1,7 @@
 ﻿using Common.Dto;
+using Common.Enum;
 using Encoder;
+using Parser;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Encoders;
 using RetroNET_BBS.Templates;
@@ -165,13 +167,27 @@ namespace RetroNET_BBS.Client
                     history.Push(currentPage);
 
                     var nextPage = currentPage.LinkedContentsType.Where(x => x.BulletItem == commandArrived);
-                    currentPage = PageContainer.GetNextContent(nextPage.Single(), encoder);
-                    currentScreen = 1;
-                    //if (nextPage.Any())
-                    //{
-                    //    currentPage = PageContainer.FindPageFromLink(nextPage.Single().Link);
-                    //    currentScreen = 1;
-                    //}
+
+                    if (nextPage.Single().Source == Sources.Dynamic)
+                    {
+                        var link = nextPage.Single().Link;
+                        var ss = link.Substring(0, link.IndexOf("."));
+                        Type type = Type.GetType(link + ", " + ss);
+                        object o = Activator.CreateInstance(type); // an instance of target type
+                        IDynamicContent your = (IDynamicContent)o;
+
+                        your.HandleConnectionFlow(stream, encoder);
+                    }
+                    else
+                    {
+                        currentPage = PageContainer.GetNextContent(nextPage.Single(), encoder);
+                        currentScreen = 1;
+                        //if (nextPage.Any())
+                        //{
+                        //    currentPage = PageContainer.FindPageFromLink(nextPage.Single().Link);
+                        //    currentScreen = 1;
+                        //}
+                    }
                 }
 
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
