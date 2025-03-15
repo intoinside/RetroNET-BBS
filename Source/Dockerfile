@@ -10,21 +10,21 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
 # Restore and build project
-WORKDIR /src
-COPY ["Source/RetroNET-BBS/RetroNET-BBS.csproj", "Source/RetroNET-BBS/"]
-COPY ["Source/Common/Common.csproj", "Source/Common/"]
-COPY ["Source/Encoder/Encoder.csproj", "Source/Encoder/"]
-COPY ["Source/Parser/Parser.csproj", "Source/Parser/"]
-RUN dotnet restore "./Source/RetroNET-BBS/RetroNET-BBS.csproj"
+COPY ["./Common/Common.csproj", "Common/"]
+COPY ["./Encoder/Encoder.csproj", "Encoder/"]
+COPY ["./Parser/Parser.csproj", "Parser/"]
+COPY ["./PetsciiRawConverter/PetsciiRawConverter.csproj", "PetsciiRawConverter/"]
+COPY ["./RetroNET-BBS/RetroNET-BBS.csproj", "RetroNET-BBS/"]
+COPY ["./SampleDynamicContent/SampleDynamicContent.csproj", "SampleDynamicContent/"]
 
-COPY . .
-WORKDIR "/Source/RetroNET-BBS"
-RUN dotnet build "./Source/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet restore "RetroNET-BBS/RetroNET-BBS.csproj"
+
+RUN dotnet build "RetroNET-BBS/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Source/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "RetroNET-BBS/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 EXPOSE 8502
 EXPOSE 23
@@ -34,4 +34,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "RetroNET-BBS.dll"]
-
