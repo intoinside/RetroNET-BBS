@@ -18,7 +18,7 @@ COPY ["Source/Parser/Parser.csproj", "Source/Parser/"]
 RUN dotnet restore "./Source/RetroNET-BBS/RetroNET-BBS.csproj"
 
 COPY . .
-WORKDIR "/src/Source/RetroNET-BBS"
+WORKDIR "/Source/RetroNET-BBS"
 RUN dotnet build "./Source/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
