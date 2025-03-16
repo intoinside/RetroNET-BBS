@@ -159,6 +159,14 @@ namespace Parser.Markdown
 
                                 bulletIndex++;
                             }
+                            else if (inline is LiteralInline)
+                            {
+                                var ininline = (LiteralInline)inline;
+
+                                var label = ininline.ToMarkdownString();
+                                output.Append("* ");
+                                output.AppendLine(label);
+                            }
                         }
                         else if (block[0] is HtmlBlock)
                         {
