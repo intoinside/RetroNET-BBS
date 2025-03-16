@@ -201,9 +201,9 @@ namespace RetroNET_BBS.Client
         /// <returns></returns>
         protected async Task<string> HandleConnectionFlow(IEncoder encoder)
         {
-            var stream = client.GetStream();
             var buffer = new byte[1024];
-            int bytesRead = stream.Read(buffer, 0, buffer.Length);
+            BinaryReader reader = new BinaryReader(client.GetStream());
+            int bytesRead = reader.Read(buffer, 0, buffer.Length);
 
             if (bytesRead == 0)
             {

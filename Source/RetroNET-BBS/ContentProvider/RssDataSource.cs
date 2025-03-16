@@ -60,8 +60,7 @@ namespace RetroNET_BBS.ContentProvider
                 content.Append(StringUtils.CreateBulletNumber(bulletNumber + 1));
                 content.Append(" ");
 
-                var itemTitle = encoder.Cleaner(item.Title);
-                content.AppendLine(StringUtils.SplitToLines(itemTitle, encoder.NumberOfColumns() - 8).First() + "...");
+                content.AppendLine(StringUtils.SplitToLines(item.Title, encoder.NumberOfColumns() - 8).First() + "...");
 
                 content.AppendLine("    " + item.PublishDate.ToString("dd/MM/yyyy HH:mm"));
 

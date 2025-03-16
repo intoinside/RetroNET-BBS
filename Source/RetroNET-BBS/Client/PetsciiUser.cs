@@ -1,5 +1,6 @@
 ﻿using Encoder;
 using RetroNET_BBS.ContentProvider;
+using System;
 using System.Net.Sockets;
 
 namespace RetroNET_BBS.Client
@@ -22,10 +23,10 @@ namespace RetroNET_BBS.Client
             // Not clear why, Petscii requires a stream.Read in order to clear
             // buffer before using it
             NetworkStream stream = client.GetStream();
-            {
-                var buffer = new byte[1024];
-                stream.Read(buffer, 0, buffer.Length);
-            }
+
+            var buffer = new byte[1024];
+            BinaryReader reader = new BinaryReader(client.GetStream());
+            int bytesRead = reader.Read(buffer, 0, buffer.Length);
 
             HandleConnection(onlineUsers).Wait();
         }
