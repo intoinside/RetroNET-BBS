@@ -8,7 +8,7 @@
       "environmentVariables": {
         "DATA_FOLDER": "/data"
       },
-      "containerRunArguments": "-v /D/Documenti/csharpbbs/RetroNET-BBS/site:/data:ro -p 23:23 -p 8502:8502"
+      "containerRunArguments": "-rm -v /D/Documenti/csharpbbs/RetroNET-BBS/site:/data:ro -p 23:23 -p 8502:8502 --platform linux"
     }
   }
 }

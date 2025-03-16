@@ -63,7 +63,7 @@ namespace Parser.Markdown
             {
                 if (linked.Source == Sources.Markdown)
                 {
-                    linked.Link = Path.Combine(folder, linked.Link + ".md");
+                    linked.Link = Path.Combine(folder, linked.Link + ".md").Replace("\\", "_").Replace("/", "_");
                 }
                 else if (linked.Source == Sources.Raw)
                 {
@@ -76,7 +76,7 @@ namespace Parser.Markdown
             Page page = new Page()
             {
                 Source = Sources.Markdown,
-                Link = path,
+                Link = path.Replace("\\", "_").Replace("/", "_"),
                 Title = heading,
                 Content = content,
                 LinkedContentsType = linkedContent,
@@ -158,6 +158,14 @@ namespace Parser.Markdown
                                 output.AppendLine(text);
 
                                 bulletIndex++;
+                            }
+                            else if (inline is LiteralInline)
+                            {
+                                var ininline = (LiteralInline)inline;
+
+                                var label = ininline.ToMarkdownString();
+                                output.Append("* ");
+                                output.AppendLine(label);
                             }
                         }
                         else if (block[0] is HtmlBlock)

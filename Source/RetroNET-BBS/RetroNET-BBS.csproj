@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>exe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <RootNamespace>RetroNET_BBS</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
