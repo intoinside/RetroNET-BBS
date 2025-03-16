@@ -70,6 +70,8 @@ namespace RetroNET_BBS.ContentProvider
             };
             builder.Append("<lightgray>");
 
+            document = encoder.Cleaner(document);
+
             var linesSplitted = StringUtils.SplitToLines(document, encoder.NumberOfColumns() - 1);
 
             int maxPageNumber = (linesSplitted.Count() / encoder.NumberOfRows()) + 1;
