@@ -7,7 +7,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  </PropertyGroup>
+    <!--<RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
+    <PublishTrimmed>true</PublishTrimmed>
+  
+</PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.72" />
