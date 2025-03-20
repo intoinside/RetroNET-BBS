@@ -18,12 +18,12 @@ RUN echo "Targeting ${TARGETOS} and ${TARGETARCH} with optional variant ${TARGET
 
 # Restore and build project
 COPY . .
-RUN dotnet restore "Source/RetroNET-BBS/RetroNET-BBS.csproj" -a $TARGETARCH
-RUN dotnet build "Source/RetroNET-BBS/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/build -a $TARGETARCH --self-contained
+RUN dotnet restore "RetroNET-BBS/RetroNET-BBS.csproj" -a $TARGETARCH
+RUN dotnet build "RetroNET-BBS/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/build -a $TARGETARCH --self-contained
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Source/RetroNET-BBS/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/publish -a $TARGETARCH --self-contained
+RUN dotnet publish "RetroNET-BBS/RetroNET-BBS.csproj" -c $BUILD_CONFIGURATION -o /app/publish -a $TARGETARCH --self-contained
 
 EXPOSE 8502
 EXPOSE 23
