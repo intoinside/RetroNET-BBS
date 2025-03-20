@@ -45,7 +45,7 @@ namespace RetroNET_BBS.Client
         }
 
         /// <summary>
-        /// Sends a goodbye message to the client
+        /// Sends a welcome message to the client
         /// </summary>
         /// <param name="onlineUsers">Number of online users</param>
         /// <returns>Task</returns>
@@ -56,9 +56,6 @@ namespace RetroNET_BBS.Client
 
             var stream = client.GetStream();
             await stream.WriteAsync(response, 0, response.Length);
-
-            //var buffer = new byte[1024];
-            //int bytesRead = stream.Read(buffer, 0, buffer.Length);
 
             string input;
             do
@@ -106,12 +103,6 @@ namespace RetroNET_BBS.Client
             Page currentPage = indexPage;
             while (!connectionDone)
             {
-                //Type type = Type.GetType("SampleDynamicContent.MoveCursorOnScreen, SampleDynamicContent"); //target type
-                //object o = Activator.CreateInstance(type); // an instance of target type
-                //IDynamicContent your = (IDynamicContent)o;
-
-                //your.HandleConnectionFlow(stream, encoder);
-
                 // Draws the page
                 output = PageContainer.GetPage(currentPage.Content, encoder, ref currentScreen);
 
@@ -176,6 +167,7 @@ namespace RetroNET_BBS.Client
                         object o = Activator.CreateInstance(type); // an instance of target type
                         IDynamicContent your = (IDynamicContent)o;
 
+                        // Dynamic content can handle the connection flow
                         your.HandleConnectionFlow(stream, encoder);
                     }
                     else

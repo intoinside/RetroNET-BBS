@@ -91,7 +91,7 @@ namespace CommonTests.Utils
             string result = StringUtils.CreateBulletNumber(bulletNumber);
 
             // Assert
-            result.Should().Be("<revon><white> A <revoff><lightgrey>");
+            result.Should().Be("<white><revon> A <revoff><lightgrey>");
         }
 
         [TestMethod]
@@ -104,7 +104,7 @@ namespace CommonTests.Utils
             string result = StringUtils.CreateBulletNumber(bulletNumber);
 
             // Assert
-            result.Should().Be("<revon><white> 1 <revoff><lightgrey>");
+            result.Should().Be("<white><revon> 1 <revoff><lightgrey>");
         }
 
         [TestMethod]
@@ -117,7 +117,7 @@ namespace CommonTests.Utils
             string result = StringUtils.CreateBulletNumber(bulletNumber);
 
             // Assert
-            result.Should().Be("<revon><white> * <revoff><lightgrey>");
+            result.Should().Be("<white><revon> * <revoff><lightgrey>");
         }
 
         [TestMethod]
@@ -130,7 +130,7 @@ namespace CommonTests.Utils
             string result = StringUtils.CreateBulletNumber(bulletNumber);
 
             // Assert
-            result.Should().Be("<revon><white> a <revoff><lightgrey>");
+            result.Should().Be("<white><revon> a <revoff><lightgrey>");
         }
     }
 }
