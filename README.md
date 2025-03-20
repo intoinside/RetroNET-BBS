@@ -86,7 +86,7 @@ Text style can be changed using color tags. The following tags are available:
 * &lt;yellow&gt;
 * &lt;cyan&gt;
 
-Note: 
+Note: some color are not perfectly rendered on both connection.
 
 Background and foreground color can be inverted with tags:
 * &lt;revon&gt;

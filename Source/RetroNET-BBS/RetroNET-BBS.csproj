@@ -7,7 +7,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileFile>../../Dockerfile</DockerfileFile>
+    <DockerfileFile>../Dockerfile</DockerfileFile>
   </PropertyGroup>
 
   <ItemGroup>
