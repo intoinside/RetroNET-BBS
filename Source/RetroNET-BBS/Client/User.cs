@@ -82,7 +82,6 @@ namespace RetroNET_BBS.Client
         /// Handle the connection flow
         /// </summary>
         /// <param name="onlineUsers"></param>
-        /// <param name="stream">Stream for the client connected</param>
         /// <returns></returns>
         protected async Task HandleConnection(int onlineUsers)
         {
