@@ -16,16 +16,19 @@ namespace RetroNET_BBS.Server
 
         private static int clientConnectedCount = 0;
 
+        private readonly IUserFactory userFactory;
+
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="host"></param>
-        public Server(string host, int port, ConnectionType type)
+        public Server(string host, int port, ConnectionType type, IUserFactory userFactory)
         {
             listener = null;
             IpAddress = host;
             Port = port;
             connectionType = type;
+            this.userFactory = userFactory;
         }
 
         /// <summary>
@@ -33,7 +36,12 @@ namespace RetroNET_BBS.Server
         /// </summary>
         /// <returns>Task</returns>
         /// <exception cref="InvalidOperationException"></exception>
-        public async Task Start()
+        /// <summary>
+        /// Creates a new server instance and starts listening for incoming connections.
+        /// </summary>
+        /// <returns>Task</returns>
+        /// <exception cref="InvalidOperationException"></exception>
+        public async Task Start(CancellationToken stoppingToken)
         {
             if (listener != null)
             {
@@ -46,19 +54,29 @@ namespace RetroNET_BBS.Server
 
             OnMessageReceived("Server started on port  " + Port.ToString().PadLeft(5) + ". Waiting for a connection...");
 
-            while (true)
+            try
             {
-                try
+                while (!stoppingToken.IsCancellationRequested)
                 {
-                    while (true)
+                    try
                     {
-                        Accept(await listener.AcceptTcpClientAsync());
+                        var client = await listener.AcceptTcpClientAsync(stoppingToken);
+                        _ = HandleClientConnection(client);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        // Stop requested
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        OnMessageReceived($"Error accepting client: {ex.Message}");
                     }
                 }
-                finally
-                {
-                    listener.Stop();
-                }
+            }
+            finally
+            {
+                Stop();
             }
         }
 
@@ -67,14 +85,27 @@ namespace RetroNET_BBS.Server
         /// </summary>
         /// <param name="client">Client connected</param>
         /// <returns>Task</returns>
-        private async Task Accept(TcpClient client)
+        /// <summary>
+        /// Accepts a new client connection and starts a new task to handle the client.
+        /// </summary>
+        /// <param name="client">Client connected</param>
+        /// <returns>Task</returns>
+        private async Task HandleClientConnection(TcpClient client)
         {
-            clientConnectedCount++;
+            Interlocked.Increment(ref clientConnectedCount);
 
             OnMessageReceived("New connection on port  " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
 
             await Task.Yield();
-            await HandleClientAsync(client, connectionType);
+            try 
+            {
+                await HandleClientAsync(client, connectionType);
+            }
+            catch (Exception ex)
+            {
+                OnMessageReceived($"Error handling client: {ex.Message}");
+                client.Close();
+            }
         }
 
         /// <summary>
@@ -98,18 +129,7 @@ namespace RetroNET_BBS.Server
         /// <returns>Task</returns>
         private async Task HandleClientAsync(TcpClient client, ConnectionType connectionType)
         {
-            User? user = null;
-            switch (connectionType)
-            {
-                case ConnectionType.Petscii:
-                    user = new PetsciiUser(client, clientConnectedCount, OnUserDisconnect);
-                    break;
-                case ConnectionType.Telnet:
-                    user = new TelnetUser(client, clientConnectedCount, OnUserDisconnect);
-                    break;
-                default:
-                    throw new NotSupportedException("Connection type not supported");
-            }
+            User? user = userFactory.Create(connectionType, client, clientConnectedCount, OnUserDisconnect);
         }
 
         /// <summary>
@@ -117,7 +137,7 @@ namespace RetroNET_BBS.Server
         /// </summary>
         public void OnUserDisconnect()
         {
-            clientConnectedCount--;
+            Interlocked.Decrement(ref clientConnectedCount);
             OnMessageReceived("Connection lost on port " + Port.ToString().PadLeft(5) + ": " + clientConnectedCount.ToString() + " clients");
         }
 

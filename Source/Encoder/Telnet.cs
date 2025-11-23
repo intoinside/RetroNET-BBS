@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Common;
 
 namespace Encoder
 {
@@ -13,35 +14,35 @@ namespace Encoder
         /// </summary>
         private static Dictionary<string, string> ConversionMap = new Dictionary<string, string>()
         {
-            { "<white>", "\x1B[1;37m" },
-            { "<red>", "\x1B[31m" },
-            { "<green>", "\x1B[32m" },
-            { "<blue>", "\x1B[34m" },
-            { "<orange>", "\x1B[33m" },
-            { "<black>", "\x1B[30m" },
-            { "<brown>", "\x1B[31m" },
-            { "<lightred>", "\x1B[1;31m" },
-            { "<pink>", "\x1B[1;35m" },
-            { "<darkgray>", "\x1B[1;30m" },
-            { "<darkgrey>", "\x1B[1;30m" },
-            { "<gray>", "\x1B[1;30m" },
-            { "<grey>", "\x1B[1;30m" },
-            { "<lightgreen>", "\x1B[1;32m" },
-            { "<lightblue>", "\x1B[1;34m" },
-            { "<lightgray>", "\x1B[37m" },
-            { "<lightgrey>", "\x1B[37m" },
-            { "<purple>",  "\x1B[35m" },
-            { "<yellow>", "\x1B[1;33m" },
-            { "<cyan>", "\x1B[36m" },
-            { "<revon>", "\x1B[7m" },
-            { "<revoff>", "\x1B[27m" },
+            { Constants.Colors.White, "\x1B[1;37m" },
+            { Constants.Colors.Red, "\x1B[31m" },
+            { Constants.Colors.Green, "\x1B[32m" },
+            { Constants.Colors.Blue, "\x1B[34m" },
+            { Constants.Colors.Orange, "\x1B[33m" },
+            { Constants.Colors.Black, "\x1B[30m" },
+            { Constants.Colors.Brown, "\x1B[31m" },
+            { Constants.Colors.LightRed, "\x1B[1;31m" },
+            { Constants.Colors.Pink, "\x1B[1;35m" },
+            { Constants.Colors.DarkGray, "\x1B[1;30m" },
+            { Constants.Colors.DarkGrey, "\x1B[1;30m" },
+            { Constants.Colors.Gray, "\x1B[1;30m" },
+            { Constants.Colors.Grey, "\x1B[1;30m" },
+            { Constants.Colors.LightGreen, "\x1B[1;32m" },
+            { Constants.Colors.LightBlue, "\x1B[1;34m" },
+            { Constants.Colors.LightGray, "\x1B[37m" },
+            { Constants.Colors.LightGrey, "\x1B[37m" },
+            { Constants.Colors.Purple,  "\x1B[35m" },
+            { Constants.Colors.Yellow, "\x1B[1;33m" },
+            { Constants.Colors.Cyan, "\x1B[36m" },
+            { Constants.Colors.RevOn, "\x1B[7m" },
+            { Constants.Colors.RevOff, "\x1B[27m" },
   
             // Convert position tags
-            { "<home>", "\x1B[1;1H" },
-            { "<crsrdown>", "\x1B[B" },
-            { "<crsrright>", "\x1B[C"},
-            { "<crsrup>", "\x1B[A" },
-            { "<crsrleft>", "\x1B[D" },
+            { Constants.Cursor.Home, "\x1B[1;1H" },
+            { Constants.Cursor.Down, "\x1B[B" },
+            { Constants.Cursor.Right, "\x1B[C"},
+            { Constants.Cursor.Up, "\x1B[A" },
+            { Constants.Cursor.Left, "\x1B[D" },
         };
 
         /// <summary>

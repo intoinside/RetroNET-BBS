@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Parser.Markdown;
 
 namespace ParserTests.Markdown

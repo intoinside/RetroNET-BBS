@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Common;
 
 namespace Encoder
 {
@@ -18,35 +19,35 @@ namespace Encoder
         /// </summary>
         private static Dictionary<string, string> ConversionMap = new Dictionary<string, string>() { 
             // Convert color tags
-            { "<white>", new String((char)5, 1) },
-            { "<red>", new String((char)28, 1) },
-            { "<green>", new String((char)30, 1) },
-            { "<blue>", new String((char)31, 1) },
-            { "<orange>", new String((char)129, 1) },
-            { "<black>", new String((char)144, 1) },
-            { "<brown>", new String((char)149, 1) },
-            { "<lightred>", new String((char)150, 1) },
-            { "<pink>", new String((char)150, 1) },
-            { "<darkgray>", new String((char)151, 1) },
-            { "<darkgrey>", new String((char)151, 1) },
-            { "<gray>", new String((char)152, 1) },
-            { "<grey>", new String((char)152, 1) },
-            { "<lightgreen>", new String((char)153, 1) },
-            { "<lightblue>", new String((char)154, 1) },
-            { "<lightgray>", new String((char)155, 1) },
-            { "<lightgrey>", new String((char)155, 1) },
-            { "<purple>", new String((char)156, 1) },
-            { "<yellow>", new String((char)158, 1) },
-            { "<cyan>", new String((char)159, 1) },
-            { "<revon>", new String((char)18, 1) },
-            { "<revoff>", new String((char)146, 1) },
+            { Constants.Colors.White, new String((char)5, 1) },
+            { Constants.Colors.Red, new String((char)28, 1) },
+            { Constants.Colors.Green, new String((char)30, 1) },
+            { Constants.Colors.Blue, new String((char)31, 1) },
+            { Constants.Colors.Orange, new String((char)129, 1) },
+            { Constants.Colors.Black, new String((char)144, 1) },
+            { Constants.Colors.Brown, new String((char)149, 1) },
+            { Constants.Colors.LightRed, new String((char)150, 1) },
+            { Constants.Colors.Pink, new String((char)150, 1) },
+            { Constants.Colors.DarkGray, new String((char)151, 1) },
+            { Constants.Colors.DarkGrey, new String((char)151, 1) },
+            { Constants.Colors.Gray, new String((char)152, 1) },
+            { Constants.Colors.Grey, new String((char)152, 1) },
+            { Constants.Colors.LightGreen, new String((char)153, 1) },
+            { Constants.Colors.LightBlue, new String((char)154, 1) },
+            { Constants.Colors.LightGray, new String((char)155, 1) },
+            { Constants.Colors.LightGrey, new String((char)155, 1) },
+            { Constants.Colors.Purple, new String((char)156, 1) },
+            { Constants.Colors.Yellow, new String((char)158, 1) },
+            { Constants.Colors.Cyan, new String((char)159, 1) },
+            { Constants.Colors.RevOn, new String((char)18, 1) },
+            { Constants.Colors.RevOff, new String((char)146, 1) },
 
             // Convert position tags
-            { "<home>",  new String((char)19, 1) },
-            { "<crsrdown>",  new String((char)17, 1) },
-            { "<crsrright>",  new String((char)29, 1) },
-            { "<crsrup>",  new String((char)145, 1) },
-            { "<crsrleft>",  new String((char)157, 1) },
+            { Constants.Cursor.Home,  new String((char)19, 1) },
+            { Constants.Cursor.Down,  new String((char)17, 1) },
+            { Constants.Cursor.Right,  new String((char)29, 1) },
+            { Constants.Cursor.Up,  new String((char)145, 1) },
+            { Constants.Cursor.Left,  new String((char)157, 1) },
         };
 
         /// <summary>

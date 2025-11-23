@@ -1,65 +1,77 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Parser.Markdown;
 using Parser.Raw;
 using RetroNET_BBS.Client;
 using RetroNET_BBS.ContentProvider;
 using RetroNET_BBS.Server;
+using Common;
 
 public class Prg
 {
-    /// <summary>
-    /// Start a new instance of the Petscii server
-    /// </summary>
-    static async void StartPetsciiServer()
+    public static async Task Main(string[] args)
     {
-        var svr = new Server("0.0.0.0", 8502, ConnectionType.Petscii);
-        await svr.Start();
-    }
+        var host = Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddJsonFile(Constants.Config.AppSettingsFile, optional: false, reloadOnChange: true);
+            })
+            .ConfigureServices((hostContext, services) =>
+            {
+                services.AddLogging(configure => configure.AddConsole());
+                
+                // Register PageContainer as Singleton (for now, until further refactoring)
+                // Note: PageContainer is static, so we don't strictly need to register it, 
+                // but we should initialize it here.
+                
+                // Register Servers as Hosted Services
+                services.AddSingleton<IUserFactory, UserFactory>();
+                services.AddHostedService<BbsBackgroundService>();
+            })
+            .Build();
 
-    /// <summary>
-    /// Start a new instance of the Telnet server
-    /// </summary>
-    static async void StartTelnetServer()
-    {
-        var svr = new Server("0.0.0.0", 23, ConnectionType.Telnet);
-        await svr.Start();
-    }
+        var config = host.Services.GetRequiredService<IConfiguration>();
+        var logger = host.Services.GetRequiredService<ILogger<Prg>>();
 
-    public static void Main()
-    {
+        logger.LogInformation("Hello, World! This is RetroNET-BBS!");
 
-        Console.WriteLine("Hello, World! This is RetroNET-BBS!");
-
-        // Start document import
-        var builder = new ConfigurationBuilder().AddJsonFile("appSettings.json");
-        var config = builder.Build();
-
-        var folder = config["Path"];
-        var homePath = Path.Combine(folder, "index.md");
-
-        Console.WriteLine("Parsing pages...");
+        var folder = config[Constants.Config.PathKey];
+        
+        logger.LogInformation("Parsing pages...");
         PageContainer.Pages = Markdown.ParseAllFiles(folder);
 
-        Console.WriteLine("Parsing imports...");
+        logger.LogInformation("Parsing imports...");
         PageContainer.Imports = Seq.ParseAllFiles(folder);
 
-        Console.WriteLine("Starting servers...");
-        Thread thread1 = new Thread(StartPetsciiServer);
-        thread1.IsBackground = true;
-        thread1.Start();
+        await host.RunAsync();
 
-        Thread thread2 = new Thread(StartTelnetServer);
-        thread2.IsBackground = true;
-        thread2.Start();
+        logger.LogInformation("Goodbye, World!");
+    }
+}
 
-        Thread.Sleep(1000);
+public class BbsBackgroundService : BackgroundService
+{
+    private readonly ILogger<BbsBackgroundService> logger;
+    private readonly IUserFactory userFactory;
 
-        while (true)
-        {
-            Thread.Sleep(1000);
-        }
+    public BbsBackgroundService(ILogger<BbsBackgroundService> logger, IUserFactory userFactory)
+    {
+        this.logger = logger;
+        this.userFactory = userFactory;
+    }
 
-        Console.WriteLine("Goodbye, World!");
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        logger.LogInformation("Starting servers...");
 
+        var petsciiServer = new Server("0.0.0.0", 8502, ConnectionType.Petscii, userFactory);
+        var telnetServer = new Server("0.0.0.0", 23, ConnectionType.Telnet, userFactory);
+
+        var t1 = petsciiServer.Start(stoppingToken);
+        var t2 = telnetServer.Start(stoppingToken);
+
+        await Task.WhenAll(t1, t2);
     }
 }

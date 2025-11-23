@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Common.Enum;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ParserTests.Markdown
 {
